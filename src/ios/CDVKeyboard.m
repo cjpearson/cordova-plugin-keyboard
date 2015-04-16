@@ -32,17 +32,15 @@
 
 @implementation CDVKeyboard
 
-@dynamic hideFormAccessoryBar;
-
 - (id)settingForKey:(NSString*)key
 {
     return [self.commandDelegate.settings objectForKey:[key lowercaseString]];
 }
 
+#pragma mark Initialize
+
 - (void)pluginInitialize
 {
-    // SETTINGS ////////////////////////
-
     NSString* setting = nil;
 
     setting = @"HideKeyboardFormAccessoryBar";
@@ -59,8 +57,6 @@
     if ([self settingForKey:setting]) {
         self.disableScrollingInShrinkView = [(NSNumber*)[self settingForKey:setting] boolValue];
     }
-
-    //////////////////////////
 
     NSNotificationCenter* nc = [NSNotificationCenter defaultCenter];
     __weak CDVKeyboard* weakSelf = self;
@@ -105,7 +101,7 @@
     _accessoryBarHeight = 44;
 }
 
-// //////////////////////////////////////////////////
+#pragma mark HideFormAccessoryBar
 
 - (BOOL)hideFormAccessoryBar
 {
@@ -157,8 +153,6 @@
     _hideFormAccessoryBar = ahideFormAccessoryBar;
 }
 
-// //////////////////////////////////////////////////
-
 - (NSArray*)getKeyboardViews:(UIView*)viewToSearch{
     NSArray *subViews;
     
@@ -184,7 +178,6 @@
         return @"<UIInputSetContainerView";
     }
 }
-
 
 - (void)formAccessoryBarKeyboardWillShow:(NSNotification*)notif
 {
@@ -242,28 +235,48 @@
     self.webView.scrollView.frame = CGRectMake(0, 0, self.webView.frame.size.width, self.webView.frame.size.height);
 }
 
-// //////////////////////////////////////////////////
+#pragma mark KeyboardShrinksView
 
 - (void)shrinkViewKeyboardWillChangeFrame:(NSNotification*)notif
 {
-    // No-op on iOS7.0.  It already resizes webview by default, and this plugin is causing layout issues
-    // with fixed position elements.  We possibly should attempt to implement shringview = false on iOS7.0.
+    // No-op on iOS 7.0.  It already resizes webview by default, and this plugin is causing layout issues
+    // with fixed position elements.  We possibly should attempt to implement shrinkview = false on iOS7.0.
     // iOS 7.1+ behave the same way as iOS 6
-    if (NSFoundationVersionNumber == NSFoundationVersionNumber_iOS_7_0){
+    if (NSFoundationVersionNumber < NSFoundationVersionNumber_iOS_7_1 && NSFoundationVersionNumber > NSFoundationVersionNumber_iOS_6_1){
+        return;
+    }
+    
+    // If the view is not visible, we should do nothing. E.g. if the inappbrowser is open.
+    if (!(self.viewController.isViewLoaded && self.viewController.view.window)){
         return;
     }
     
     self.webView.scrollView.scrollEnabled = YES;
     
-    CGRect screen = self.webView.frame.origin.y > 0 ?
-    [self.viewController.view convertRect:[[UIScreen mainScreen] applicationFrame] fromView:nil]:
-    [self.viewController.view convertRect:[[UIScreen mainScreen] bounds] fromView:nil];
-
-    CGRect keyboard = [self.viewController.view convertRect: ((NSValue*)notif.userInfo[@"UIKeyboardFrameEndUserInfoKey"]).CGRectValue fromView: nil];
+    CGRect screen = [[UIScreen mainScreen] bounds];
+    CGRect statusBar = [[UIApplication sharedApplication] statusBarFrame];
+    CGRect keyboard = ((NSValue*)notif.userInfo[@"UIKeyboardFrameEndUserInfoKey"]).CGRectValue;
+    
+    // Work within the webview's coordinate system
+    keyboard = [self.webView convertRect:keyboard fromView:nil];
+    statusBar = [self.webView convertRect:statusBar fromView:nil];
+    screen = [self.webView convertRect:screen fromView:nil];
+    
+    // if the webview is below the status bar, offset and shrink its frame
+    if(![[self settingForKey:@"StatusBarOverlaysWebView"] boolValue]){
+        CGRect full, remainder;
+        CGRectDivide(screen, &remainder, &full, statusBar.size.height, CGRectMinYEdge);
+        screen = full;
+    }
+    
+    // Get the intersection of the keyboard and screen and move the webview above it
+    // Note: we check for _shrinkView at this point instead of the beginning of the method to handle
+    // the case where the user disabled shrinkView while the keyboard is showing.
+    // The webview should always be able to return to full size
     CGRect keyboardIntersection = CGRectIntersection(screen, keyboard);
-
     if(CGRectContainsRect(screen, keyboardIntersection) && !CGRectIsEmpty(keyboardIntersection) && _shrinkView && self.keyboardIsVisible){
-        screen.size.height -= MIN(keyboardIntersection.size.height, keyboardIntersection.size.width);
+        
+        screen.size.height -= keyboardIntersection.size.height;
         
         if (_hideFormAccessoryBar){
             screen.size.height += _accessoryBarHeight;
@@ -272,26 +285,21 @@
         self.webView.scrollView.scrollEnabled = !self.disableScrollingInShrinkView;
     }
     
-    self.webView.frame = screen;
+    // A view's frame is in its superview's coordinate system so we need to convert again
+    self.webView.frame = [self.webView.superview convertRect:screen fromView:self.webView];
 }
 
-// //////////////////////////////////////////////////
+#pragma mark UIScrollViewDelegate
 
-- (void)dealloc
-{
-    // since this is ARC, remove observers only
-
-    NSNotificationCenter* nc = [NSNotificationCenter defaultCenter];
-
-    [nc removeObserver:self name:UIKeyboardWillShowNotification object:nil];
-    [nc removeObserver:self name:UIKeyboardWillHideNotification object:nil];
+- (void)scrollViewDidScroll:(UIScrollView *)scrollView {
+    if(_shrinkView){
+        scrollView.bounds = self.webView.bounds;
+    }
 }
-
-// //////////////////////////////////////////////////
 
 #pragma mark Plugin interface
 
-- (void) shrinkView:(CDVInvokedUrlCommand*)command
+- (void)shrinkView:(CDVInvokedUrlCommand*)command
 {
     id value = [command.arguments objectAtIndex:0];
     if (!([value isKindOfClass:[NSNumber class]])) {
@@ -301,7 +309,7 @@
     self.shrinkView = [value boolValue];
 }
 
-- (void) disableScrollingInShrinkView:(CDVInvokedUrlCommand*)command
+- (void)disableScrollingInShrinkView:(CDVInvokedUrlCommand*)command
 {
     id value = [command.arguments objectAtIndex:0];
     if (!([value isKindOfClass:[NSNumber class]])) {
@@ -311,7 +319,7 @@
     self.disableScrollingInShrinkView = [value boolValue];
 }
 
-- (void) hideFormAccessoryBar:(CDVInvokedUrlCommand*)command
+- (void)hideFormAccessoryBar:(CDVInvokedUrlCommand*)command
 {
     id value = [command.arguments objectAtIndex:0];
     if (!([value isKindOfClass:[NSNumber class]])) {
@@ -321,10 +329,17 @@
     self.hideFormAccessoryBar = [value boolValue];
 }
 
-#pragma mark UIScrollViewDelegate
-- (void)scrollViewDidScroll:(UIScrollView *)scrollView {
-    if(_shrinkView){
-        scrollView.bounds = self.webView.bounds;
-    }
+#pragma mark dealloc
+
+- (void)dealloc
+{
+    // since this is ARC, remove observers only
+    
+    NSNotificationCenter* nc = [NSNotificationCenter defaultCenter];
+    
+    [nc removeObserver:self name:UIKeyboardWillShowNotification object:nil];
+    [nc removeObserver:self name:UIKeyboardWillHideNotification object:nil];
+    [nc removeObserver:self name:UIKeyboardWillChangeFrameNotification object:nil];
 }
+
 @end
