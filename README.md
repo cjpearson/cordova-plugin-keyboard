@@ -24,10 +24,10 @@ Properties
 Events
 --------
 
-- Keyboard.onshow
-- Keyboard.onhide
-- Keyboard.onshowing
-- Keyboard.onhiding
+- keyboardDidShow
+- keyboardDidHide
+- keyboardWillShow
+- keyboardWillHide
 
 
 Permissions
@@ -35,9 +35,9 @@ Permissions
 
 #### config.xml
 
-            <feature name="Keyboard">
-                <param name="ios-package" value="CDVKeyboard" onload="true" />
-            </feature>
+    <feature name="Keyboard">
+        <param name="ios-package" value="CDVKeyboard" onload="true" />
+    </feature>
 
 Keyboard.shrinkView
 =================
@@ -135,7 +135,7 @@ Supported Platforms
 Keyboard.automaticScrollToTopOnHiding
 =================
 
-Specifies whenether content of page would be autoamtically scrolled to the top of the page
+Specifies whenether content of page would be automatically scrolled to the top of the page
 when keyboard is hiding.
 
     Keyboard.automaticScrollToTopOnHiding = true;
@@ -153,14 +153,14 @@ Supported Platforms
 
 - iOS
 
-Keyboard.onshow
+keyboardDidShow
 =================
 
-If defined, this function fired when keyboard fully shown.
+This event is fired when keyboard fully shown.
 
-    Keyboard.onshow = function () {
+    window.addEventListener('keyboardDidShow', function () {
         // Describe your logic which will be run each time keyboard is shown.
-    }
+    });
 
 Description
 -----------
@@ -173,14 +173,14 @@ Supported Platforms
 
 - iOS
 
-Keyboard.onhide
+keyboardDidHide
 =================
 
-If defined, this function fired when keyboard fully closed.
+This event is fired when the keyboard is fully closed.
 
-    Keyboard.onhide = function () {
+    window.addEventListener('keyboardDidHide', function () {
         // Describe your logic which will be run each time keyboard is closed.
-    }
+    });
 
 Description
 -----------
@@ -193,14 +193,14 @@ Supported Platforms
 
 - iOS
 
-Keyboard.onshowing
+keyboardWillShow
 =================
 
-If defined, this function fired before keyboard will be shown.
+This event fires before keyboard will be shown.
 
-    Keyboard.onshowing = function () {
+    window.addEventListener('keyboardWillShow', function () {
         // Describe your logic which will be run each time when keyboard is about to be shown.
-    }
+    });
 
 Description
 -----------
@@ -213,14 +213,14 @@ Supported Platforms
 
 - iOS
 
-Keyboard.onhiding
+keyboardWillHide
 =================
 
-If defined, this function fired when keyboard fully closed.
+This event is fired when the keyboard is fully closed.
 
-    Keyboard.onhiding = function () {
+    window.addEventListener('keyboardWillHide', function () {
         // Describe your logic which will be run each time when keyboard is about to be closed.
-    }
+    });
 
 Description
 -----------
