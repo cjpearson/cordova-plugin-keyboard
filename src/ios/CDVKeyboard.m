@@ -94,6 +94,11 @@
                                                                   queue:[NSOperationQueue mainQueue]
                                                              usingBlock:^(NSNotification* notification) {
                                                                  [weakSelf performSelector:@selector(shrinkViewKeyboardWillChangeFrame:) withObject:notification afterDelay:0];
+                                                                 CGRect screen = [[UIScreen mainScreen] bounds];
+                                                                 CGRect keyboard = ((NSValue*)notification.userInfo[@"UIKeyboardFrameEndUserInfoKey"]).CGRectValue;
+                                                                 CGRect intersection = CGRectIntersection(screen, keyboard);
+                                                                 CGFloat height = MIN(intersection.size.width, intersection.size.height);
+                                                                 [weakSelf.commandDelegate evalJs: [NSString stringWithFormat:@"cordova.fireWindowEvent('keyboardHeightWillChange', { 'keyboardHeight': %f })", height]];
                                                              }];
     
     self.webView.scrollView.delegate = self;

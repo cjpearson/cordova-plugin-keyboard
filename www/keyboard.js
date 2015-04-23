@@ -40,12 +40,10 @@ Keyboard.disableScrollingInShrinkView = function(disable) {
 
 Keyboard.fireOnShow = function() {
     Keyboard.isVisible = true;
-
     cordova.fireWindowEvent('keyboardDidShow');
 };
 Keyboard.fireOnHide = function() {
     Keyboard.isVisible = false;
-
     cordova.fireWindowEvent('keyboardDidHide');
 };
 Keyboard.fireOnHiding = function() {
@@ -61,6 +59,9 @@ Keyboard.fireOnHiding = function() {
 };
 Keyboard.fireOnShowing = function() {
     cordova.fireWindowEvent('keyboardWillShow');
+};
+Keyboard.fireOnHeightChange = function() {
+    
 };
 
 Keyboard.isVisible = false;
