@@ -64,6 +64,14 @@ Keyboard.fireOnHeightChange = function() {
     
 };
 
+Keyboard.show = function() {
+    exec(null, null, "Keyboard", "show", []);
+};
+
+Keyboard.hide = function() {
+    exec(null, null, "Keyboard", "hide", []);
+};
+
 Keyboard.isVisible = false;
 Keyboard.automaticScrollToTopOnHiding = false;
 
