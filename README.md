@@ -1,7 +1,7 @@
 Keyboard
 ======
 
-> The `Keyboard` object provides some functions to customize the iOS keyboard.
+> The `Keyboard` object provides some functions to customize the keyboard.
 
 This plugin has only been tested in Cordova 3.2 or greater, and its use in previous Cordova versions is not recommended (potential conflict with keyboard customization code present in the core in previous Cordova versions). 
 
@@ -12,22 +12,24 @@ This plugin supports the __HideKeyboardFormAccessoryBar__ (boolean) and __Keyboa
 Methods
 -------
 
-- Keyboard.shrinkView
-- Keyboard.hideFormAccessoryBar
-- Keyboard.disableScrollingInShrinkView
+- [Keyboard.shrinkView](#Keyboard.shrinkView)
+- [Keyboard.hideFormAccessoryBar](#Keyboard.hideFormAccessoryBar)
+- [Keyboard.disableScrollingInShrinkView](#Keyboard.disableScrollingInShrinkView)
 
 Properties
 --------
 
-- Keyboard.isVisible
+- [Keyboard.isVisible](#Keyboard.isVisible)
+- [Keyboard.automaticScrollToTopOnHiding](#Keyboard.automaticScrollToTopOnHiding)
 
 Events
 --------
 
-- keyboardDidShow
-- keyboardDidHide
-- keyboardWillShow
-- keyboardWillHide
+- [keyboardDidShow](#keyboardDidShow)
+- [keyboardDidHide](#keyboardDidHide)
+- [keyboardWillShow](#keyboardWillShow)
+- [keyboardWillHide](#keyboardWillHide)
+- [keyboardHeightWillChange](#keyboardHeightWillChange)
 
 
 Permissions
@@ -39,8 +41,7 @@ Permissions
         <param name="ios-package" value="CDVKeyboard" onload="true" />
     </feature>
 
-Keyboard.shrinkView
-=================
+# Keyboard.shrinkView
 
 Shrink the WebView when the keyboard comes up.
 
@@ -63,8 +64,7 @@ Quick Example
     Keyboard.shrinkView(true);
     Keyboard.shrinkView(false);
 
-Keyboard.hideFormAccessoryBar
-=================
+# Keyboard.hideFormAccessoryBar
 
 Hide the keyboard toolbar.
 
@@ -88,8 +88,7 @@ Quick Example
     Keyboard.hideFormAccessoryBar(false);
 
 
-Keyboard.disableScrollingInShrinkView
-=================
+# Keyboard.disableScrollingInShrinkView
 
 Disable scrolling when the the WebView is shrunk.
 
@@ -112,8 +111,7 @@ Quick Example
     Keyboard.disableScrollingInShrinkView(true);
     Keyboard.disableScrollingInShrinkView(false);
 
-Keyboard.isVisible
-=================
+# Keyboard.isVisible
 
 Determine if the keyboard is visible.
 
@@ -132,8 +130,7 @@ Supported Platforms
 
 - iOS
 
-Keyboard.automaticScrollToTopOnHiding
-=================
+# Keyboard.automaticScrollToTopOnHiding
 
 Specifies whenether content of page would be automatically scrolled to the top of the page
 when keyboard is hiding.
@@ -153,8 +150,7 @@ Supported Platforms
 
 - iOS
 
-keyboardDidShow
-=================
+# keyboardDidShow
 
 This event is fired when keyboard fully shown.
 
@@ -173,8 +169,7 @@ Supported Platforms
 
 - iOS
 
-keyboardDidHide
-=================
+# keyboardDidHide
 
 This event is fired when the keyboard is fully closed.
 
@@ -193,8 +188,7 @@ Supported Platforms
 
 - iOS
 
-keyboardWillShow
-=================
+# keyboardWillShow
 
 This event fires before keyboard will be shown.
 
@@ -213,8 +207,7 @@ Supported Platforms
 
 - iOS
 
-keyboardWillHide
-=================
+# keyboardWillHide
 
 This event is fired when the keyboard is fully closed.
 
