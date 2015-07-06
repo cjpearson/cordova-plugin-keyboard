@@ -41,11 +41,21 @@ Keyboard.disableScrollingInShrinkView = function(disable) {
 Keyboard.fireOnShow = function() {
     Keyboard.isVisible = true;
     cordova.fireWindowEvent('keyboardDidShow');
+
+    if(Keyboard.onshow) {
+	Keyboard.onshow();
+    }
 };
+
 Keyboard.fireOnHide = function() {
     Keyboard.isVisible = false;
     cordova.fireWindowEvent('keyboardDidHide');
+
+    if(Keyboard.onhide) {
+	Keyboard.onhide();
+    }
 };
+
 Keyboard.fireOnHiding = function() {
     // Automatic scroll to the top of the page
     // to prevent quirks when using position:fixed elements
@@ -56,12 +66,18 @@ Keyboard.fireOnHiding = function() {
     }
 
     cordova.fireWindowEvent('keyboardWillHide');
+
+    if(Keyboard.onhiding) {
+	Keyboard.onhiding();
+    }
 };
+
 Keyboard.fireOnShowing = function() {
     cordova.fireWindowEvent('keyboardWillShow');
-};
-Keyboard.fireOnHeightChange = function() {
-    
+
+    if(Keyboard.onshowing) {
+	Keyboard.onshowing();
+    }
 };
 
 Keyboard.show = function() {
