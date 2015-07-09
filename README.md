@@ -12,6 +12,8 @@ This plugin supports the __HideKeyboardFormAccessoryBar__ (boolean) and __Keyboa
  - [Keyboard.shrinkView](#keyboardshrinkview)
  - [Keyboard.hideFormAccessoryBar](#keyboardhideformaccessorybar)
  - [Keyboard.disableScrollingInShrinkView](#keyboarddisablescrollinginshrinkview)
+ - [Keyboard.hide](#keyboardhide)
+ - [Keyboard.show](#keyboardshow)
 - [Properties](#properties)
  - [Keyboard.isVisible](#keyboardisvisible)
  - [Keyboard.automaticScrollToTopOnHiding](#keyboardautomaticscrolltotoponhiding)
@@ -84,6 +86,44 @@ Set to true to disable scrolling when the WebView is shrunk.
 
     Keyboard.disableScrollingInShrinkView(true);
     Keyboard.disableScrollingInShrinkView(false);
+ 
+## Keyboard.hide
+
+Hide the keyboard
+
+    Keyboard.hide();
+
+#### Description
+
+Call this method to hide the keyboard
+
+#### Supported Platforms
+
+- iOS
+- Android
+
+#### Quick Example
+
+    Keyboard.hide();
+
+## Keyboard.show
+
+Show the keyboard
+
+    Keyboard.show();
+
+#### Description
+
+Call this method to show the keyboard.
+
+
+#### Supported Platforms
+
+- Android
+
+#### Quick Example
+
+    Keyboard.show();
 
 # Properties
 
