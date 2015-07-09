@@ -334,6 +334,11 @@
     self.hideFormAccessoryBar = [value boolValue];
 }
 
+- (void)hide:(CDVInvokedUrlCommand*)command
+{
+    [self.webView endEditing:YES];
+}
+
 #pragma mark dealloc
 
 - (void)dealloc
