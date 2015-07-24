@@ -27,17 +27,13 @@
     @protected
     id _keyboardShowObserver, _keyboardHideObserver, _keyboardWillShowObserver, _keyboardWillHideObserver;
     @protected
-    id _hideFormAccessoryBarKeyboardShowObserver, _hideFormAccessoryBarKeyboardHideObserver;
-    @protected
     id _shrinkViewKeyboardWillChangeFrameObserver;
-    @protected
-    CGFloat _accessoryBarHeight;
 }
 
 @property (readwrite, assign) BOOL shrinkView;
 @property (readwrite, assign) BOOL disableScrollingInShrinkView;
-@property (readwrite, assign)  BOOL hideFormAccessoryBar;
-@property (readonly, assign)  BOOL keyboardIsVisible;
+@property (readwrite, assign) BOOL hideFormAccessoryBar;
+@property (readonly, assign) BOOL keyboardIsVisible;
 
 - (void) shrinkView:(CDVInvokedUrlCommand*)command;
 - (void) disableScrollingInShrinkView:(CDVInvokedUrlCommand*)command;

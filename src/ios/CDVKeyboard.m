@@ -19,6 +19,7 @@
 
 #import "CDVKeyboard.h"
 #import <Cordova/CDVAvailability.h>
+#import <objc/runtime.h>
 
 #ifndef __CORDOVA_3_2_0
 #warning "The keyboard plugin is only supported in Cordova 3.2 or greater, it may not work properly in an older version. If you do use this plugin in an older version, make sure the HideKeyboardFormAccessoryBar and KeyboardShrinksView preference values are false."
@@ -102,8 +103,6 @@
                                                              }];
     
     self.webView.scrollView.delegate = self;
-    
-    _accessoryBarHeight = 44;
 }
 
 #pragma mark HideFormAccessoryBar
@@ -113,131 +112,31 @@
     return _hideFormAccessoryBar;
 }
 
+static IMP originalImp;
+
 - (void)setHideFormAccessoryBar:(BOOL)ahideFormAccessoryBar
 {
-    NSNotificationCenter* nc = [NSNotificationCenter defaultCenter];
-    __weak CDVKeyboard* weakSelf = self;
-
     if (ahideFormAccessoryBar == _hideFormAccessoryBar) {
         return;
     }
 
-    if (ahideFormAccessoryBar) {
-        [nc removeObserver:_hideFormAccessoryBarKeyboardShowObserver];
-        _hideFormAccessoryBarKeyboardShowObserver = [nc addObserverForName:UIKeyboardWillShowNotification
-                                                                    object:nil
-                                                                     queue:[NSOperationQueue mainQueue]
-                                                                usingBlock:^(NSNotification* notification) {
-                // we can't hide it here because the accessory bar hasn't been created yet, so we delay on the queue
-                [weakSelf performSelector:@selector(formAccessoryBarKeyboardWillShow:) withObject:notification afterDelay:0];
-            }];
-
-        [nc removeObserver:_hideFormAccessoryBarKeyboardHideObserver];
-        _hideFormAccessoryBarKeyboardHideObserver = [nc addObserverForName:UIKeyboardWillHideNotification
-                                                                    object:nil
-                                                                     queue:[NSOperationQueue mainQueue]
-                                                                usingBlock:^(NSNotification* notification) {
-                [weakSelf formAccessoryBarKeyboardWillHide:notification];
-            }];
-    } else {
-        [nc removeObserver:_hideFormAccessoryBarKeyboardShowObserver];
-        [nc removeObserver:_hideFormAccessoryBarKeyboardHideObserver];
-
-        // if a keyboard is already visible (and the accessorybar was hidden), hide observer will NOT be called, so we observe it once
-        if (self.keyboardIsVisible && _hideFormAccessoryBar) {
-            _hideFormAccessoryBarKeyboardHideObserver = [nc addObserverForName:UIKeyboardWillHideNotification
-                                                                        object:nil
-                                                                         queue:[NSOperationQueue mainQueue]
-                                                                    usingBlock:^(NSNotification* notification) {
-                    [weakSelf formAccessoryBarKeyboardWillHide:notification];
-                    [[NSNotificationCenter defaultCenter] removeObserver:_hideFormAccessoryBarKeyboardHideObserver];
-                }];
-        }
+    Class webBrowserClass = NSClassFromString(@"UIWebBrowserView");
+    Method method = class_getInstanceMethod(webBrowserClass, @selector(inputAccessoryView));
+    
+    if (ahideFormAccessoryBar){
+        originalImp = method_getImplementation(method);
+        
+        IMP newImp = imp_implementationWithBlock(^(id _s){
+            return nil;
+        });
+        
+        method_setImplementation(method, newImp);
+    }
+    else {
+        method_setImplementation(method, originalImp);
     }
 
     _hideFormAccessoryBar = ahideFormAccessoryBar;
-}
-
-- (NSArray*)getKeyboardViews:(UIView*)viewToSearch{
-    NSArray *subViews;
-    
-    for (UIView *possibleFormView in viewToSearch.subviews) {
-        if ([[possibleFormView description] hasPrefix: self.getKeyboardFirstLevelIdentifier]) {
-            if(IsAtLeastiOSVersion(@"8.0")){
-                for (UIView* subView in possibleFormView.subviews) {
-                    return subView.subviews;
-                }
-            }else{
-                return possibleFormView.subviews;
-            }
-        }
-        
-    }
-    return subViews;
-}
-
-- (NSString*)getKeyboardFirstLevelIdentifier{
-    if(!IsAtLeastiOSVersion(@"8.0")){
-        return @"<UIPeripheralHostView";
-    }else{
-        return @"<UIInputSetContainerView";
-    }
-}
-
-- (void)formAccessoryBarKeyboardWillShow:(NSNotification*)notif
-{
-    if (!_hideFormAccessoryBar) {
-        return;
-    }
-
-    UIWindow *keyboardWindow = nil;
-    for (UIWindow *windows in [[UIApplication sharedApplication] windows]) {
-        if (![[windows class] isEqual:[UIWindow class]]) {
-            keyboardWindow = windows;
-            break;
-        }
-    }
-    
-    for (UIView* peripheralView in [self getKeyboardViews:keyboardWindow]) {
-        
-        // hides the backdrop (iOS 7)
-        if ([[peripheralView description] hasPrefix:@"<UIKBInputBackdropView"]) {
-            // check that this backdrop is for the accessory bar (at the top),
-            // sparing the backdrop behind the main keyboard
-            CGRect rect = peripheralView.frame;
-            if (rect.origin.y == 0) {
-                [[peripheralView layer] setOpacity:0.0];
-            }
-        }
-        
-        // hides the accessory bar
-        if ([[peripheralView description] hasPrefix:@"<UIWebFormAccessory"]) {
-            //remove the extra scroll space for the form accessory bar
-            CGRect newFrame = self.webView.scrollView.frame;
-            newFrame.size.height += peripheralView.frame.size.height;
-            self.webView.scrollView.frame = newFrame;
-            
-            _accessoryBarHeight = peripheralView.frame.size.height;
-            
-            // remove the form accessory bar
-            if(IsAtLeastiOSVersion(@"8.0")){
-                [[peripheralView layer] setOpacity:0.0];
-            }else{
-                [peripheralView removeFromSuperview];
-            }
-            
-        }
-        // hides the thin grey line used to adorn the bar (iOS 6)
-        if ([[peripheralView description] hasPrefix:@"<UIImageView"]) {
-            [[peripheralView layer] setOpacity:0.0];
-        }
-    }
-}
-
-- (void)formAccessoryBarKeyboardWillHide:(NSNotification*)notif
-{
-    // restore the scrollview frame
-    self.webView.scrollView.frame = CGRectMake(0, 0, self.webView.frame.size.width, self.webView.frame.size.height);
 }
 
 #pragma mark KeyboardShrinksView
@@ -280,13 +179,7 @@
     // The webview should always be able to return to full size
     CGRect keyboardIntersection = CGRectIntersection(screen, keyboard);
     if(CGRectContainsRect(screen, keyboardIntersection) && !CGRectIsEmpty(keyboardIntersection) && _shrinkView && self.keyboardIsVisible){
-        
         screen.size.height -= keyboardIntersection.size.height;
-        
-        if (_hideFormAccessoryBar){
-            screen.size.height += _accessoryBarHeight;
-        }
-        
         self.webView.scrollView.scrollEnabled = !self.disableScrollingInShrinkView;
     }
     
