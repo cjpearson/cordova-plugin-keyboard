@@ -112,7 +112,8 @@
     return _hideFormAccessoryBar;
 }
 
-static IMP originalImp;
+static IMP UIOriginalImp;
+static IMP WKOriginalImp;
 
 - (void)setHideFormAccessoryBar:(BOOL)ahideFormAccessoryBar
 {
@@ -120,19 +121,22 @@ static IMP originalImp;
         return;
     }
 
-    Class webBrowserClass = NSClassFromString(@"UIWebBrowserView");
-    Method method = class_getInstanceMethod(webBrowserClass, @selector(inputAccessoryView));
+    Method UIMethod = class_getInstanceMethod(NSClassFromString(@"UIWebBrowserView"), @selector(inputAccessoryView));
+    Method WKMethod = class_getInstanceMethod(NSClassFromString(@"WKContentView"), @selector(inputAccessoryView));
 
     if (ahideFormAccessoryBar) {
-        originalImp = method_getImplementation(method);
+        UIOriginalImp = method_getImplementation(UIMethod);
+        WKOriginalImp = method_getImplementation(WKMethod);
 
         IMP newImp = imp_implementationWithBlock(^(id _s) {
             return nil;
         });
 
-        method_setImplementation(method, newImp);
+        method_setImplementation(UIMethod, newImp);
+        method_setImplementation(WKMethod, newImp);
     } else {
-        method_setImplementation(method, originalImp);
+        method_setImplementation(UIMethod, UIOriginalImp);
+        method_setImplementation(WKMethod, WKOriginalImp);
     }
 
     _hideFormAccessoryBar = ahideFormAccessoryBar;
