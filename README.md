@@ -1,13 +1,14 @@
-# Keyboard
+# cordova-plugin-keyboard
 
-> The `Keyboard` object provides some functions to customize the keyboard.
+> This plugin provides the `Keyboard` object which has some functions to customize and control the keyboard. It also supports the __HideKeyboardFormAccessoryBar__ (boolean) and __KeyboardShrinksView__ (boolean) preferences in config.xml.
 
 This plugin has only been tested in Cordova 3.2 or greater, and its use in previous Cordova versions is not recommended (potential conflict with keyboard customization code present in the core in previous Cordova versions). 
 
 If you do use this plugin in an older Cordova version (again, not recommended), you have to make sure the HideKeyboardFormAccessoryBar and KeyboardShrinksView preference values are *always* false, and only use the API functions to turn things on/off.
 
-This plugin supports the __HideKeyboardFormAccessoryBar__ (boolean) and __KeyboardShrinksView__ (boolean) preferences in config.xml.
+This plugin was based on this Apache [project](https://github.com/apache/cordova-plugins/tree/master/keyboard) and has a compatible API.
 
+- [Installation](#installation)
 - [Methods](#methods)
  - [Keyboard.shrinkView](#keyboardshrinkview)
  - [Keyboard.hideFormAccessoryBar](#keyboardhideformaccessorybar)
@@ -23,6 +24,17 @@ This plugin supports the __HideKeyboardFormAccessoryBar__ (boolean) and __Keyboa
  - [keyboardWillShow](#keyboardwillshow)
  - [keyboardWillHide](#keyboardwillhide)
  - [keyboardHeightWillChange](#keyboardheightwillchange)
+- [Releases](#releases) 
+
+# Installation
+
+From npm (stable)
+
+`cordova plugin add cordova-plugin-keyboard`
+
+From github latest (may not be stable)
+
+`cordova plugin add https://github.com/cjpearson/cordova-plugin-keyboard`
 
 # Methods
 
@@ -249,4 +261,26 @@ Attach handler to this event to be able to receive notification when keyboard is
 #### Supported Platforms
 
 - iOS
+
+
+# Releases
+
+- 1.0.0 
+ - Initial NPM release
+ - Fix issues with external keyboards
+ - Support keyboard events on window
+ - Fix issues with split and undocked keyboards
+ - Add keyboardHeightWillChange event
+ - Fix issues with StatusBarOverlaysWebview
+- 1.1.0
+ - Add hide/show for Android
+ - Support original keyboard event mechanism
+- 1.1.1
+ - Make compatible with cordova-android 3 and 4 (See [#2](/../../issues/2))
+ - Add hide for iOS
+- 1.1.2
+ - Fix issues with hiding the accessory bar (See [#3](/../../issues/3))
+- 1.1.3
+ - Support hiding the accessory bar when using WKWebView as the engine (See [here](https://github.com/Telerik-Verified-Plugins/WKWebView/issues/85))
+
 
