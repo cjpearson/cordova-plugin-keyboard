@@ -194,8 +194,12 @@ static IMP WKOriginalImp;
 
 - (void)scrollViewDidScroll:(UIScrollView*)scrollView
 {
-    if (_shrinkView) {
-        scrollView.bounds = self.webView.bounds;
+    if (_shrinkView && _keyboardIsVisible) {
+        CGFloat maxY = scrollView.contentSize.height - scrollView.bounds.size.height;
+        if (scrollView.bounds.origin.y > maxY) {
+            scrollView.bounds = CGRectMake(scrollView.bounds.origin.x, maxY,
+                                           scrollView.bounds.size.width, scrollView.bounds.size.height);
+        }
     }
 }
 
