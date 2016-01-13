@@ -17,78 +17,96 @@
  * specific language governing permissions and limitations
  * under the License.
  *
-*/
+ */
 
 var argscheck = require('cordova/argscheck'),
-    utils = require('cordova/utils'),
-    exec = require('cordova/exec');
-   
-var Keyboard = function() {
+	utils = require('cordova/utils'),
+	exec = require('cordova/exec'),
+	channel = require('cordova/channel');
+
+var Keyboard = function () {};
+
+Keyboard.shrinkView = function (shrink) {
+	exec(null, null, "Keyboard", "shrinkView", [shrink]);
 };
 
-Keyboard.shrinkView = function(shrink) {
-    exec(null, null, "Keyboard", "shrinkView", [shrink]);
+Keyboard.hideFormAccessoryBar = function (hide) {
+	exec(null, null, "Keyboard", "hideFormAccessoryBar", [hide]);
 };
 
-Keyboard.hideFormAccessoryBar = function(hide) {
-    exec(null, null, "Keyboard", "hideFormAccessoryBar", [hide]);
+Keyboard.disableScrollingInShrinkView = function (disable) {
+	exec(null, null, "Keyboard", "disableScrollingInShrinkView", [disable]);
 };
 
-Keyboard.disableScrollingInShrinkView = function(disable) {
-    exec(null, null, "Keyboard", "disableScrollingInShrinkView", [disable]);
+Keyboard.fireOnShow = function () {
+	Keyboard.isVisible = true;
+	cordova.fireWindowEvent('keyboardDidShow');
+
+	if (Keyboard.onshow) {
+		Keyboard.onshow();
+	}
 };
 
-Keyboard.fireOnShow = function() {
-    Keyboard.isVisible = true;
-    cordova.fireWindowEvent('keyboardDidShow');
+Keyboard.fireOnHide = function () {
+	Keyboard.isVisible = false;
+	cordova.fireWindowEvent('keyboardDidHide');
 
-    if(Keyboard.onshow) {
-	Keyboard.onshow();
-    }
+	if (Keyboard.onhide) {
+		Keyboard.onhide();
+	}
 };
 
-Keyboard.fireOnHide = function() {
-    Keyboard.isVisible = false;
-    cordova.fireWindowEvent('keyboardDidHide');
+Keyboard.fireOnHiding = function () {
+	// Automatic scroll to the top of the page
+	// to prevent quirks when using position:fixed elements
+	// inside WebKit browsers (iOS specifically).
+	// See CB-6444 for context.
+	if (Keyboard.automaticScrollToTopOnHiding) {
+		document.body.scrollLeft = 0;
+	}
 
-    if(Keyboard.onhide) {
-	Keyboard.onhide();
-    }
+	cordova.fireWindowEvent('keyboardWillHide');
+
+	if (Keyboard.onhiding) {
+		Keyboard.onhiding();
+	}
 };
 
-Keyboard.fireOnHiding = function() {
-    // Automatic scroll to the top of the page
-    // to prevent quirks when using position:fixed elements
-    // inside WebKit browsers (iOS specifically).
-    // See CB-6444 for context.
-    if (Keyboard.automaticScrollToTopOnHiding) {
-        document.body.scrollLeft = 0;
-    }
+Keyboard.fireOnShowing = function () {
+	cordova.fireWindowEvent('keyboardWillShow');
 
-    cordova.fireWindowEvent('keyboardWillHide');
-
-    if(Keyboard.onhiding) {
-	Keyboard.onhiding();
-    }
+	if (Keyboard.onshowing) {
+		Keyboard.onshowing();
+	}
 };
 
-Keyboard.fireOnShowing = function() {
-    cordova.fireWindowEvent('keyboardWillShow');
-
-    if(Keyboard.onshowing) {
-	Keyboard.onshowing();
-    }
+Keyboard.show = function () {
+	exec(null, null, "Keyboard", "show", []);
 };
 
-Keyboard.show = function() {
-    exec(null, null, "Keyboard", "show", []);
-};
-
-Keyboard.hide = function() {
-    exec(null, null, "Keyboard", "hide", []);
+Keyboard.hide = function () {
+	exec(null, null, "Keyboard", "hide", []);
 };
 
 Keyboard.isVisible = false;
 Keyboard.automaticScrollToTopOnHiding = false;
+
+channel.onCordovaReady.subscribe(function () {
+	exec(success, null, 'Keyboard', 'init', []);
+
+	function success(msg) {
+		var action = msg.charAt(0);
+		if (action === 'S') {
+			var keyboardHeight = msg.substr(1);
+			Keyboard.isVisible = true;
+			cordova.fireWindowEvent('keyboardDidShow', {
+				'keyboardHeight': +keyboardHeight
+			});
+		} else if (action === 'H') {
+			Keyboard.isVisible = false;
+			cordova.fireWindowEvent('keyboardDidHide');
+		}
+	}
+});
 
 module.exports = Keyboard;
