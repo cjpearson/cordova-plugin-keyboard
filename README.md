@@ -28,7 +28,7 @@ This plugin was based on this Apache [project](https://github.com/apache/cordova
 
 # Installation
 
-From npm (stable)
+From [npm](https://www.npmjs.com/package/cordova-plugin-keyboard) (stable)
 
 `cordova plugin add cordova-plugin-keyboard`
 
@@ -282,5 +282,8 @@ Attach handler to this event to be able to receive notification when keyboard is
  - Fix issues with hiding the accessory bar (See [#3](/../../issues/3))
 - 1.1.3
  - Support hiding the accessory bar when using WKWebView as the engine (See [here](https://github.com/Telerik-Verified-Plugins/WKWebView/issues/85))
+- 1.1.4
+ - Fix page scrolling (See [#14](/../../issues/14))
+ - Prevent possible app store rejections (See [#21](/../../issues/21)) 
 
 
