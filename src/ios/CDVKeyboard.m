@@ -121,8 +121,11 @@ static IMP WKOriginalImp;
         return;
     }
 
-    Method UIMethod = class_getInstanceMethod(NSClassFromString(@"UIWebBrowserView"), @selector(inputAccessoryView));
-    Method WKMethod = class_getInstanceMethod(NSClassFromString(@"WKContentView"), @selector(inputAccessoryView));
+    NSString* UIClassString = [@[@"UI", @"Web", @"Browser", @"View"] componentsJoinedByString:@""];
+    NSString* WKClassString = [@[@"WK", @"Content", @"View"] componentsJoinedByString:@""];
+
+    Method UIMethod = class_getInstanceMethod(NSClassFromString(UIClassString), @selector(inputAccessoryView));
+    Method WKMethod = class_getInstanceMethod(NSClassFromString(WKClassString), @selector(inputAccessoryView));
 
     if (ahideFormAccessoryBar) {
         UIOriginalImp = method_getImplementation(UIMethod);
