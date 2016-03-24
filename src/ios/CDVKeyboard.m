@@ -165,6 +165,8 @@ static IMP WKOriginalImp;
 
 - (void)setKeyboardStyle:(NSString*)style
 {
+    style = [style lowercaseString];
+
     if ([style isEqualToString:_keyboardStyle]) {
         return;
     }
@@ -285,9 +287,7 @@ static IMP WKOriginalImp;
 - (void)keyboardStyle:(CDVInvokedUrlCommand*)command
 {
     id value = [command.arguments objectAtIndex:0];
-    if ([value isKindOfClass:[NSString class]]) {
-        value = [(NSString*)value lowercaseString];
-    } else {
+    if (![value isKindOfClass:[NSString class]]) {
         value = @"light";
     }
 
