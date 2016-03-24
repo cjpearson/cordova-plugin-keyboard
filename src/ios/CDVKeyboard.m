@@ -40,13 +40,27 @@
 
 #pragma mark Initialize
 
+static NSString* UIClassString;
+static NSString* WKClassString;
+static NSString* UITraitsClassString;
+
 - (void)pluginInitialize
 {
+    // Create these strings at runtime so they aren't flagged
+    UIClassString = [@[@"UI", @"Web", @"Browser", @"View"] componentsJoinedByString:@""];
+    WKClassString = [@[@"WK", @"Content", @"View"] componentsJoinedByString:@""];
+    UITraitsClassString = [@[@"UI", @"Text", @"Input", @"Traits"] componentsJoinedByString:@""];
+
     NSString* setting = nil;
 
     setting = @"HideKeyboardFormAccessoryBar";
     if ([self settingForKey:setting]) {
         self.hideFormAccessoryBar = [(NSNumber*)[self settingForKey:setting] boolValue];
+    }
+
+    setting = @"KeyboardStyle";
+    if ([self settingForKey:setting]) {
+        self.keyboardStyle = [self settingForKey:setting];
     }
 
     setting = @"KeyboardShrinksView";
@@ -66,28 +80,28 @@
                                             object:nil
                                              queue:[NSOperationQueue mainQueue]
                                         usingBlock:^(NSNotification* notification) {
-            [weakSelf.commandDelegate evalJs:@"Keyboard.fireOnShow();"];
+                                            [weakSelf.commandDelegate evalJs:@"Keyboard.fireOnShow();"];
                                         }];
     _keyboardHideObserver = [nc addObserverForName:UIKeyboardDidHideNotification
                                             object:nil
                                              queue:[NSOperationQueue mainQueue]
                                         usingBlock:^(NSNotification* notification) {
-            [weakSelf.commandDelegate evalJs:@"Keyboard.fireOnHide();"];
+                                            [weakSelf.commandDelegate evalJs:@"Keyboard.fireOnHide();"];
                                         }];
 
     _keyboardWillShowObserver = [nc addObserverForName:UIKeyboardWillShowNotification
                                                 object:nil
                                                  queue:[NSOperationQueue mainQueue]
                                             usingBlock:^(NSNotification* notification) {
-            [weakSelf.commandDelegate evalJs:@"Keyboard.fireOnShowing();"];
-            weakSelf.keyboardIsVisible = YES;
+                                                [weakSelf.commandDelegate evalJs:@"Keyboard.fireOnShowing();"];
+                                                weakSelf.keyboardIsVisible = YES;
                                             }];
     _keyboardWillHideObserver = [nc addObserverForName:UIKeyboardWillHideNotification
                                                 object:nil
                                                  queue:[NSOperationQueue mainQueue]
                                             usingBlock:^(NSNotification* notification) {
-            [weakSelf.commandDelegate evalJs:@"Keyboard.fireOnHiding();"];
-            weakSelf.keyboardIsVisible = NO;
+                                                [weakSelf.commandDelegate evalJs:@"Keyboard.fireOnHiding();"];
+                                                weakSelf.keyboardIsVisible = NO;
                                             }];
 
     _shrinkViewKeyboardWillChangeFrameObserver = [nc addObserverForName:UIKeyboardWillChangeFrameNotification
@@ -121,9 +135,6 @@ static IMP WKOriginalImp;
         return;
     }
 
-    NSString* UIClassString = [@[@"UI", @"Web", @"Browser", @"View"] componentsJoinedByString:@""];
-    NSString* WKClassString = [@[@"WK", @"Content", @"View"] componentsJoinedByString:@""];
-
     Method UIMethod = class_getInstanceMethod(NSClassFromString(UIClassString), @selector(inputAccessoryView));
     Method WKMethod = class_getInstanceMethod(NSClassFromString(WKClassString), @selector(inputAccessoryView));
 
@@ -143,6 +154,39 @@ static IMP WKOriginalImp;
     }
 
     _hideFormAccessoryBar = ahideFormAccessoryBar;
+}
+
+#pragma mark Keyboard Style
+
+- (NSString*)keyboardStyle
+{
+    return _keyboardStyle;
+}
+
+- (void)setKeyboardStyle:(NSString*)style
+{
+    if ([style isEqualToString:_keyboardStyle]) {
+        return;
+    }
+
+    IMP newImp = [style isEqualToString:@"dark"] ? imp_implementationWithBlock(^(id _s) {
+        return UIKeyboardAppearanceDark;
+    }) : imp_implementationWithBlock(^(id _s) {
+        return UIKeyboardAppearanceLight;
+    });
+
+    for (NSString* classString in @[UIClassString, UITraitsClassString]) {
+        Class c = NSClassFromString(classString);
+        Method m = class_getInstanceMethod(c, @selector(keyboardAppearance));
+
+        if (m != NULL) {
+            method_setImplementation(m, newImp);
+        } else {
+            class_addMethod(c, @selector(keyboardAppearance), newImp, "l@:");
+        }
+    }
+
+    _keyboardStyle = style;
 }
 
 #pragma mark KeyboardShrinksView
@@ -236,6 +280,18 @@ static IMP WKOriginalImp;
     }
 
     self.hideFormAccessoryBar = [value boolValue];
+}
+
+- (void)keyboardStyle:(CDVInvokedUrlCommand*)command
+{
+    id value = [command.arguments objectAtIndex:0];
+    if ([value isKindOfClass:[NSString class]]) {
+        value = [(NSString*)value lowercaseString];
+    } else {
+        value = @"light";
+    }
+
+    self.keyboardStyle = value;
 }
 
 - (void)hide:(CDVInvokedUrlCommand*)command

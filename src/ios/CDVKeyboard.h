@@ -25,6 +25,8 @@
     @protected
     BOOL _hideFormAccessoryBar;
     @protected
+    NSString* _keyboardStyle;
+    @protected
     id _keyboardShowObserver, _keyboardHideObserver, _keyboardWillShowObserver, _keyboardWillHideObserver;
     @protected
     id _shrinkViewKeyboardWillChangeFrameObserver;
@@ -33,11 +35,13 @@
 @property (readwrite, assign) BOOL shrinkView;
 @property (readwrite, assign) BOOL disableScrollingInShrinkView;
 @property (readwrite, assign) BOOL hideFormAccessoryBar;
+@property (readwrite, assign) NSString* keyboardStyle;
 @property (readonly, assign) BOOL keyboardIsVisible;
 
 - (void)shrinkView:(CDVInvokedUrlCommand*)command;
 - (void)disableScrollingInShrinkView:(CDVInvokedUrlCommand*)command;
 - (void)hideFormAccessoryBar:(CDVInvokedUrlCommand*)command;
+- (void)keyboardStyle:(CDVInvokedUrlCommand*)command;
 - (void)hide:(CDVInvokedUrlCommand*)command;
 
 @end
