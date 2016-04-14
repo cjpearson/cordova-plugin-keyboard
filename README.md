@@ -18,7 +18,7 @@ This plugin was based on this Apache [project](https://github.com/apache/cordova
 - [Properties](#properties)
  - [Keyboard.isVisible](#keyboardisvisible)
  - [Keyboard.automaticScrollToTopOnHiding](#keyboardautomaticscrolltotoponhiding)
- - [Keyboard.onKeyboardAnimate](#keyboardanimate)
+ - [Keyboard.onKeyboardAnimate](#keyboardonkeyboardanimate)
 - [Events](#events)
  - [keyboardDidShow](#keyboarddidshow)
  - [keyboardDidHide](#keyboarddidhide)
