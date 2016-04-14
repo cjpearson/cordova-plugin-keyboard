@@ -179,7 +179,7 @@ after keyboard is hiding.
 
 Assign a function that will handle content animation in the browser
 
-    Keyboard.onKeyboardAnimate = function(fromHeight, toHeight, animationDurationInMS, animationCompleteCallback)
+    Keyboard.onKeyboardAnimate = function(fromHeight, toHeight, animationDurationInMs, animationCompleteCallback)
     {    
         // Example with jQuery (http://jquery.com/) and Velocity.JS (http://julian.com/research/velocity/)
         $('body').velocity({height: [to, from]}, {duration: animationDurationInMS, easing: "easeOutQuad", complete: function()
@@ -199,7 +199,7 @@ Worth noting is that window.resize will be triggered after animation has been co
 This is due to the fact that the webview will resize after animation has been completed when the keyboard is appearing so that the animation is not clipped, and
 when the keyboard is hiding it will resize to the full height so that the animation out can be completed without clipping as well.
 
-Thanks to @glyuck for this approach from his project [GLKAnimateWebViewFrame](https://github.com/glyuck/GLKAnimateWebViewFrame) which is the base for this feature
+Thanks to [@glyuck](https://github.com/glyuck) for this approach from his project [GLKAnimateWebViewFrame](https://github.com/glyuck/GLKAnimateWebViewFrame) which is the base for this feature
 
 #### Supported Platforms
 
