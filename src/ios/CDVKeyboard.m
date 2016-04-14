@@ -79,14 +79,12 @@
                                             object:nil
                                              queue:[NSOperationQueue mainQueue]
                                         usingBlock:^(NSNotification* notification) {
-                                            NSLog(@"KeyboardShown");
             [weakSelf.commandDelegate evalJs:@"Keyboard.fireOnShow();"];
                                         }];
     _keyboardHideObserver = [nc addObserverForName:UIKeyboardDidHideNotification
                                             object:nil
                                              queue:[NSOperationQueue mainQueue]
                                         usingBlock:^(NSNotification* notification) {
-                                            NSLog(@"KeyboardHidden");
             [weakSelf.commandDelegate evalJs:@"Keyboard.fireOnHide();"];
                                         }];
 
@@ -94,7 +92,6 @@
                                                 object:nil
                                                  queue:[NSOperationQueue mainQueue]
                                             usingBlock:^(NSNotification* notification) {
-                                                NSLog(@"KeyboardWillShow");
             [weakSelf.commandDelegate evalJs:@"Keyboard.fireOnShowing();"];
             weakSelf.keyboardIsVisible = YES;
                                             }];
@@ -102,7 +99,6 @@
                                                 object:nil
                                                  queue:[NSOperationQueue mainQueue]
                                             usingBlock:^(NSNotification* notification) {
-                                                NSLog(@"KeyboardWillHide");
             [weakSelf.commandDelegate evalJs:@"Keyboard.fireOnHiding();"];
             weakSelf.keyboardIsVisible = NO;
                                             }];
@@ -213,7 +209,6 @@ static IMP WKOriginalImp;
     // even though keyboard is already visible, ignoring as early as possible
     if(newScreenHeight == self.webView.frame.size.height)
     {
-        NSLog(@"View supposed to change to same height, ignoring");
         if(_shouldAnimateWebView)
         {
             _shouldAnimateWebView = NO;
@@ -234,14 +229,12 @@ static IMP WKOriginalImp;
 
     // Tell JS that it can start animating with values
     NSString *javascriptString = [NSString stringWithFormat:@"Keyboard.beginAnimation(%f, %f, %f)", currentScreenHeight, newScreenHeight, duration*1000];
-    NSLog(@"Is changing webview, newScreenHeight: %f", newScreenHeight);
 
     BOOL isGrowing = newScreenHeight > currentScreenHeight;
 
     // If webView is growing, change it's frame imediately, so it's content is not clipped during animation
     if (isGrowing) {
         self.webView.frame = [self.webView.superview convertRect:screen fromView:self.webView];
-        NSLog(@"Frame changed before animation!");
     }
     [self.commandDelegate evalJs: javascriptString];
 
@@ -259,9 +252,7 @@ static IMP WKOriginalImp;
 //        // If webview was shrinking, change it's frame after animation is complete
 //        if (!isGrowing) {
 //            self.webView.frame = [self.webView.superview convertRect:screen fromView:self.webView];
-//            NSLog(@"Frame changed after animation!");
 //        }
-//        NSLog(@"Animation duration should be completed!");
 //    });
 }
 
@@ -318,29 +309,22 @@ static IMP WKOriginalImp;
 // JS indicates that it wants to handle Keyboard animation
 - (void)animationStart:(CDVInvokedUrlCommand *)command
 {
-    NSLog(@"animationStart");
     _shouldAnimateWebView = YES;
 }
 
 // JS indicates that it finished handling Keyboard animation
 - (void)animationComplete:(CDVInvokedUrlCommand*)command
 {
-    NSLog(@"animation Complete received");
     if(!_animationDetails)
     {
-        NSLog(@"no animation details available");
         return;
     }
-
-    NSLog(@"animation Complete received from %f to %f", [_animationDetails from] , [_animationDetails to]);
 
     BOOL isGrowing = [_animationDetails from] < [_animationDetails to];
     // If webview was shrinking, change it's frame after animation is complete
     if (!isGrowing) {
         self.webView.frame = [self.webView.superview convertRect:[_animationDetails screen] fromView:self.webView];
-        NSLog(@"Frame changed after animation!");
     }
-    NSLog(@"Animation duration should be completed!");
     _shouldAnimateWebView = NO;
     _animationDetails = nil;
 }

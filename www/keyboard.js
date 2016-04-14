@@ -70,9 +70,8 @@ Keyboard.fireOnHiding = function() {
     if(Keyboard.onhiding) {
 	Keyboard.onhiding();
     }
-    if(typeof Keyboard.onKeyboardAnimate === 'function')
-    {
-        animationStart();
+    if(Keyboard.onKeyboardAnimate) {
+    animationStart();
     }
 };
 
@@ -82,9 +81,8 @@ Keyboard.fireOnShowing = function() {
     if(Keyboard.onshowing) {
 	Keyboard.onshowing();
     }
-    if(typeof Keyboard.onKeyboardAnimate === 'function')
-    {
-        animationStart();
+    if(Keyboard.onKeyboardAnimate) {
+    animationStart();
     }
 };
 
@@ -96,29 +94,21 @@ Keyboard.hide = function() {
     exec(null, null, "Keyboard", "hide", []);
 };
 
-// Private animation handling
 var animationStart = function() {
-    console.log('JS: animationStart');
     exec(null, null, "Keyboard", "animationStart", []);
 };
 
 var animationComplete = function() {
-    console.log('JS: animationComplete');
     exec(null, null, "Keyboard", "animationComplete", []);
 };
 
 Keyboard.beginAnimation = function(from, to, duration) {
-    console.log('JS: beginAnimation');
-    if(typeof Keyboard.onKeyboardAnimate === 'function')
-    {
+    if(typeof Keyboard.onKeyboardAnimate === 'function') {
         Keyboard.onKeyboardAnimate(from, to, duration, animationComplete);
-    }
-    else
-    {
+    } else {
         animationComplete();
     }
 };
-// End private animation handling
 
 Keyboard.onKeyboardAnimate = null;
 Keyboard.isVisible = false;
