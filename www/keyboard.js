@@ -70,6 +70,9 @@ Keyboard.fireOnHiding = function() {
     if(Keyboard.onhiding) {
 	Keyboard.onhiding();
     }
+    if(Keyboard.onKeyboardAnimate) {
+    animationStart();
+    }
 };
 
 Keyboard.fireOnShowing = function() {
@@ -77,6 +80,9 @@ Keyboard.fireOnShowing = function() {
 
     if(Keyboard.onshowing) {
 	Keyboard.onshowing();
+    }
+    if(Keyboard.onKeyboardAnimate) {
+    animationStart();
     }
 };
 
@@ -88,6 +94,23 @@ Keyboard.hide = function() {
     exec(null, null, "Keyboard", "hide", []);
 };
 
+var animationStart = function() {
+    exec(null, null, "Keyboard", "animationStart", []);
+};
+
+var animationComplete = function() {
+    exec(null, null, "Keyboard", "animationComplete", []);
+};
+
+Keyboard.beginAnimation = function(from, to, duration) {
+    if(typeof Keyboard.onKeyboardAnimate === 'function') {
+        Keyboard.onKeyboardAnimate(from, to, duration, animationComplete);
+    } else {
+        animationComplete();
+    }
+};
+
+Keyboard.onKeyboardAnimate = null;
 Keyboard.isVisible = false;
 Keyboard.automaticScrollToTopOnHiding = false;
 

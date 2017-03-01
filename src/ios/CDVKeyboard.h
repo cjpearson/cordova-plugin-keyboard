@@ -35,5 +35,7 @@
 - (void)disableScrollingInShrinkView:(CDVInvokedUrlCommand*)command;
 - (void)hideFormAccessoryBar:(CDVInvokedUrlCommand*)command;
 - (void)hide:(CDVInvokedUrlCommand*)command;
+- (void)animationStart:(CDVInvokedUrlCommand *)command;
+- (void)animationComplete:(CDVInvokedUrlCommand *)command;
 
 @end

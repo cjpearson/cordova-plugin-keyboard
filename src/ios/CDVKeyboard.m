@@ -31,7 +31,20 @@
 
 @end
 
-@implementation CDVKeyboard
+@interface AnimationDetails : NSObject
+@property (nonatomic, readwrite, assign) CGFloat from;
+@property (nonatomic, readwrite, assign) CGFloat to;
+@property (nonatomic, readwrite, assign) CGRect screen;
+@end
+
+@implementation AnimationDetails
+
+@end;
+
+@implementation CDVKeyboard {
+    AnimationDetails *_animationDetails;
+    BOOL _shouldAnimateWebView;
+}
 
 - (id)settingForKey:(NSString*)key
 {
@@ -190,6 +203,8 @@ static IMP WKOriginalImp;
         screen = full;
     }
 
+    CGFloat currentScreenHeight = self.webView.frame.size.height;
+
     // Get the intersection of the keyboard and screen and move the webview above it
     // Note: we check for _shrinkView at this point instead of the beginning of the method to handle
     // the case where the user disabled shrinkView while the keyboard is showing.
@@ -200,8 +215,56 @@ static IMP WKOriginalImp;
         self.webView.scrollView.scrollEnabled = !self.disableScrollingInShrinkView;
     }
 
+    CGFloat newScreenHeight = screen.size.height;
+    // When keyboard will be hidden, willShow and show is triggered again
+    // even though keyboard is already visible, ignoring as early as possible
+    if(newScreenHeight == self.webView.frame.size.height)
+    {
+        if(_shouldAnimateWebView)
+        {
+            _shouldAnimateWebView = NO;
+        }
+        return;
+    }
+
     // A view's frame is in its superview's coordinate system so we need to convert again
-    self.webView.frame = [self.webView.superview convertRect:screen fromView:self.webView];
+    if(!_shouldAnimateWebView)
+    {
+        self.webView.frame = [self.webView.superview convertRect:screen fromView:self.webView];
+        return;
+    }
+
+    NSDictionary* userInfo = [notif userInfo];
+    NSNumber *durationValue = userInfo[UIKeyboardAnimationDurationUserInfoKey];
+    NSTimeInterval duration = durationValue.doubleValue;
+
+    // Tell JS that it can start animating with values
+    NSString *javascriptString = [NSString stringWithFormat:@"Keyboard.beginAnimation(%f, %f, %f)", currentScreenHeight, newScreenHeight, duration*1000];
+
+    BOOL isGrowing = newScreenHeight > currentScreenHeight;
+
+    // If webView is growing, change it's frame imediately, so it's content is not clipped during animation
+    if (isGrowing) {
+        self.webView.frame = [self.webView.superview convertRect:screen fromView:self.webView];
+    }
+    [self.commandDelegate evalJs: javascriptString];
+
+    _animationDetails = [[AnimationDetails alloc] init];
+    _animationDetails.from = currentScreenHeight;
+    _animationDetails.to = newScreenHeight;
+    _animationDetails.screen = screen;
+
+    // alternative to using animationComplete but the timer can finish before
+    // the browser is finished animating, thereby clipping the animation
+
+//    __weak typeof(self) weakSelf = self;
+//    dispatch_after(dispatch_time(DISPATCH_TIME_NOW, duration * NSEC_PER_SEC), dispatch_get_main_queue(), ^{
+//        __strong typeof(weakSelf) self = weakSelf;
+//        // If webview was shrinking, change it's frame after animation is complete
+//        if (!isGrowing) {
+//            self.webView.frame = [self.webView.superview convertRect:screen fromView:self.webView];
+//        }
+//    });
 }
 
 #pragma mark UIScrollViewDelegate
@@ -252,6 +315,29 @@ static IMP WKOriginalImp;
 - (void)hide:(CDVInvokedUrlCommand*)command
 {
     [self.webView endEditing:YES];
+}
+
+// JS indicates that it wants to handle Keyboard animation
+- (void)animationStart:(CDVInvokedUrlCommand *)command
+{
+    _shouldAnimateWebView = YES;
+}
+
+// JS indicates that it finished handling Keyboard animation
+- (void)animationComplete:(CDVInvokedUrlCommand*)command
+{
+    if(!_animationDetails)
+    {
+        return;
+    }
+
+    BOOL isGrowing = [_animationDetails from] < [_animationDetails to];
+    // If webview was shrinking, change it's frame after animation is complete
+    if (!isGrowing) {
+        self.webView.frame = [self.webView.superview convertRect:[_animationDetails screen] fromView:self.webView];
+    }
+    _shouldAnimateWebView = NO;
+    _animationDetails = nil;
 }
 
 #pragma mark dealloc

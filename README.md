@@ -18,6 +18,7 @@ This plugin was based on this Apache [project](https://github.com/apache/cordova
 - [Properties](#properties)
  - [Keyboard.isVisible](#keyboardisvisible)
  - [Keyboard.automaticScrollToTopOnHiding](#keyboardautomaticscrolltotoponhiding)
+ - [Keyboard.onKeyboardAnimate](#keyboardonkeyboardanimate)
 - [Events](#events)
  - [keyboardDidShow](#keyboarddidshow)
  - [keyboardDidHide](#keyboarddidhide)
@@ -169,6 +170,36 @@ Set this to true if you need that page scroll to beginning when keyboard is hidi
 This is allows to fix issue with elements declared with position: fixed,
 after keyboard is hiding.
 
+
+#### Supported Platforms
+
+- iOS
+
+## Keyboard.onKeyboardAnimate
+
+Assign a function that will handle content animation in the browser
+
+    Keyboard.onKeyboardAnimate = function(fromHeight, toHeight, animationDurationInMs, animationCompleteCallback)
+    {    
+        // Example with jQuery (http://jquery.com/) and Velocity.JS (http://julian.com/research/velocity/)
+        $('body').velocity({height: [to, from]}, {duration: animationDurationInMS, easing: "easeOutQuad", complete: function()
+        {
+            // Tells the plugin that client side has finished animation
+            animationCompleteCallback();
+        }});
+    };
+
+#### Description
+
+Assign a function that will handle animation when the keyboard appears and disappears.
+Remember to execute the provided callback to let the plugin know when animation has finished.
+The parameters given is which height the webview will animate from and to, the duration for which the keyboard will animate and a callback method to call when the animation has been completed.
+
+Worth noting is that window.resize will be triggered after animation has been completed when keyboard is showing, but before animation is started when hiding.
+This is due to the fact that the webview will resize after animation has been completed when the keyboard is appearing so that the animation is not clipped, and
+when the keyboard is hiding it will resize to the full height so that the animation out can be completed without clipping as well.
+
+Thanks to [@glyuck](https://github.com/glyuck) for this approach from his project [GLKAnimateWebViewFrame](https://github.com/glyuck/GLKAnimateWebViewFrame) which is the base for this feature
 
 #### Supported Platforms
 
