@@ -195,13 +195,14 @@ static IMP WKOriginalImp;
     // the case where the user disabled shrinkView while the keyboard is showing.
     // The webview should always be able to return to full size
     CGRect keyboardIntersection = CGRectIntersection(screen, keyboard);
-    if (CGRectContainsRect(screen, keyboardIntersection) && !CGRectIsEmpty(keyboardIntersection) && _shrinkView && self.keyboardIsVisible) {
+    if (CGRectContainsRect(screen, keyboardIntersection) && !CGRectIsEmpty(keyboardIntersection) && _shrinkView && !self.keyboardIsVisible) {
         screen.size.height -= keyboardIntersection.size.height;
         self.webView.scrollView.scrollEnabled = !self.disableScrollingInShrinkView;
     }
-
-    // A view's frame is in its superview's coordinate system so we need to convert again
-    self.webView.frame = [self.webView.superview convertRect:screen fromView:self.webView];
+    dispatch_async(dispatch_get_main_queue(), ^{
+        // A view's frame is in its superview's coordinate system so we need to convert again
+        self.webView.frame = [self.webView.superview convertRect:screen fromView:self.webView];
+    });
 }
 
 #pragma mark UIScrollViewDelegate
