@@ -285,5 +285,6 @@ Attach handler to this event to be able to receive notification when keyboard is
 - 1.1.4
  - Fix page scrolling (See [#14](/../../issues/14))
  - Prevent possible app store rejections (See [#21](/../../issues/21)) 
-
+- 1.1.5
+ - Fix window.innerHeight when using WKWebView (See [#32](/../../issues/32))
 
