@@ -200,6 +200,12 @@ static IMP WKOriginalImp;
         self.webView.scrollView.scrollEnabled = !self.disableScrollingInShrinkView;
     }
 
+    // Check if the webview is offset due to the blue navigation status bar.
+    CGRect webviewFrame = [self.webView convertRect:[self.webView bounds] fromView:self.webView.superview];
+    float yOffset = webviewFrame.origin.y;
+    screen.origin.y -= yOffset;
+    screen.size.height += yOffset;
+
     // A view's frame is in its superview's coordinate system so we need to convert again
     self.webView.frame = [self.webView.superview convertRect:screen fromView:self.webView];
 }
