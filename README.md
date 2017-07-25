@@ -10,20 +10,20 @@ This plugin was based on this Apache [project](https://github.com/apache/cordova
 
 - [Installation](#installation)
 - [Methods](#methods)
- - [Keyboard.shrinkView](#keyboardshrinkview)
- - [Keyboard.hideFormAccessoryBar](#keyboardhideformaccessorybar)
- - [Keyboard.disableScrollingInShrinkView](#keyboarddisablescrollinginshrinkview)
- - [Keyboard.hide](#keyboardhide)
- - [Keyboard.show](#keyboardshow)
+    - [Keyboard.shrinkView](#keyboardshrinkview)
+    - [Keyboard.hideFormAccessoryBar](#keyboardhideformaccessorybar)
+    - [Keyboard.disableScrollingInShrinkView](#keyboarddisablescrollinginshrinkview)
+    - [Keyboard.hide](#keyboardhide)
+    - [Keyboard.show](#keyboardshow)
 - [Properties](#properties)
- - [Keyboard.isVisible](#keyboardisvisible)
- - [Keyboard.automaticScrollToTopOnHiding](#keyboardautomaticscrolltotoponhiding)
+    - [Keyboard.isVisible](#keyboardisvisible)
+    - [Keyboard.automaticScrollToTopOnHiding](#keyboardautomaticscrolltotoponhiding)
 - [Events](#events)
- - [keyboardDidShow](#keyboarddidshow)
- - [keyboardDidHide](#keyboarddidhide)
- - [keyboardWillShow](#keyboardwillshow)
- - [keyboardWillHide](#keyboardwillhide)
- - [keyboardHeightWillChange](#keyboardheightwillchange)
+    - [keyboardDidShow](#keyboarddidshow)
+    - [keyboardDidHide](#keyboarddidhide)
+    - [keyboardWillShow](#keyboardwillshow)
+    - [keyboardWillHide](#keyboardwillhide)
+    - [keyboardHeightWillChange](#keyboardheightwillchange)
 - [Releases](#releases) 
 
 # Installation
@@ -266,25 +266,25 @@ Attach handler to this event to be able to receive notification when keyboard is
 # Releases
 
 - 1.0.0 
- - Initial NPM release
- - Fix issues with external keyboards
- - Support keyboard events on window
- - Fix issues with split and undocked keyboards
- - Add keyboardHeightWillChange event
- - Fix issues with StatusBarOverlaysWebview
+    - Initial NPM release
+    - Fix issues with external keyboards
+    - Support keyboard events on window
+    - Fix issues with split and undocked keyboards
+    - Add keyboardHeightWillChange event
+    - Fix issues with StatusBarOverlaysWebview
 - 1.1.0
- - Add hide/show for Android
- - Support original keyboard event mechanism
+    - Add hide/show for Android
+    - Support original keyboard event mechanism
 - 1.1.1
- - Make compatible with cordova-android 3 and 4 (See [#2](/../../issues/2))
- - Add hide for iOS
+    - Make compatible with cordova-android 3 and 4 (See [#2](/../../issues/2))
+    - Add hide for iOS
 - 1.1.2
- - Fix issues with hiding the accessory bar (See [#3](/../../issues/3))
+    - Fix issues with hiding the accessory bar (See [#3](/../../issues/3))
 - 1.1.3
- - Support hiding the accessory bar when using WKWebView as the engine (See [here](https://github.com/Telerik-Verified-Plugins/WKWebView/issues/85))
+    - Support hiding the accessory bar when using WKWebView as the engine (See [here](https://github.com/Telerik-Verified-Plugins/WKWebView/issues/85))
 - 1.1.4
- - Fix page scrolling (See [#14](/../../issues/14))
- - Prevent possible app store rejections (See [#21](/../../issues/21)) 
+    - Fix page scrolling (See [#14](/../../issues/14))
+    - Prevent possible app store rejections (See [#21](/../../issues/21)) 
 - 1.1.5
- - Fix window.innerHeight when using WKWebView (See [#32](/../../issues/32))
+    - Fix window.innerHeight when using WKWebView (See [#32](/../../issues/32))
 
