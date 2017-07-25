@@ -42,7 +42,7 @@ From github latest (may not be stable)
 
 Shrink the WebView when the keyboard comes up.
 
-    Keyboard.shrinkView(true);
+    Keyboard.shrinkView(value, successCallback);
 
 #### Description
 
@@ -57,12 +57,13 @@ Set to true to shrink the WebView when the keyboard comes up. The WebView shrink
 
     Keyboard.shrinkView(true);
     Keyboard.shrinkView(false);
+    Keyboard.shrinkView(null, function (currentValue) { console.log(currentValue); });
 
 ## Keyboard.hideFormAccessoryBar
 
 Hide the keyboard toolbar.
 
-    Keyboard.hideFormAccessoryBar(true);
+    Keyboard.hideFormAccessoryBar(value, successCallback);
 
 #### Description
 
@@ -77,13 +78,13 @@ Set to true to hide the additional toolbar that is on top of the keyboard. This 
 
     Keyboard.hideFormAccessoryBar(true);
     Keyboard.hideFormAccessoryBar(false);
-
+    Keyboard.hideFormAccessoryBar(null, function (currentValue) { console.log(currentValue); });
 
 ## Keyboard.disableScrollingInShrinkView
 
 Disable scrolling when the the WebView is shrunk.
 
-    Keyboard.disableScrollingInShrinkView(true);
+    Keyboard.disableScrollingInShrinkView(value, successCallback);
 
 #### Description
 
@@ -98,6 +99,7 @@ Set to true to disable scrolling when the WebView is shrunk.
 
     Keyboard.disableScrollingInShrinkView(true);
     Keyboard.disableScrollingInShrinkView(false);
+    Keyboard.disableScrollingInShrinkView(null, function (currentValue) { console.log(currentValue); });
  
 ## Keyboard.hide
 
