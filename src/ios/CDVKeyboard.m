@@ -148,8 +148,7 @@ static IMP WKOriginalImp;
     // They removed this behavior is iOS 10, but for 8 and 9 we need to prevent the webview from listening on keyboard events
     // Even if you later set shrinkView to false, the observers will not be added back
     NSNotificationCenter* nc = [NSNotificationCenter defaultCenter];
-    if ([self.webView isKindOfClass:NSClassFromString(@"WKWebView")]
-        && ![[NSProcessInfo processInfo] isOperatingSystemAtLeastVersion:(NSOperatingSystemVersion){.majorVersion = 10, .minorVersion = 0, .patchVersion = 0 }]) {
+    if ([self.webView isKindOfClass:NSClassFromString(@"WKWebView")]) {
         [nc removeObserver:self.webView name:UIKeyboardWillHideNotification object:nil];
         [nc removeObserver:self.webView name:UIKeyboardWillShowNotification object:nil];
         [nc removeObserver:self.webView name:UIKeyboardWillChangeFrameNotification object:nil];
