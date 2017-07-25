@@ -39,9 +39,9 @@ var app = {
     // Bind any cordova events here. Common events are:
     // 'pause', 'resume', etc.
     onDeviceReady: function() {
-        var shrinkView = document.getElementById('#shrink-view');
-        var hideBar = document.getElementById('#show-bar');
-        var disableScroll = document.getElementById('#disable-scroll');
+        var shrinkView = document.getElementById('shrink-view');
+        var hideBar = document.getElementById('show-bar');
+        var disableScroll = document.getElementById('disable-scroll');
 
         var isShrinkView = false,
             isHideBar = false,
@@ -51,20 +51,20 @@ var app = {
             Keyboard.shrinkView(!isShrinkView);
             isShrinkView = !isShrinkView;
             shrinkView.textContent = "Shrink View: " + (isShrinkView ? "True" : "False");
-        }
+        };
 
         hideBar.onclick = function () {
             Keyboard.hideFormAccessoryBar(!isHideBar);
             isHideBar = !isHideBar;
             hideBar.textContent = "Hide Bar: " + (isHideBar ? "True" : "False");
-        }
+        };
 
         disableScroll.onclick = function () {
             Keyboard.disableScrollingInShrinkView(!isDisableScroll);
             isDisableScroll = !isDisableScroll;
             disableScroll.textContent = "Disable Scroll: " + (isDisableScroll ? "True" : "False");
-        }
-    },
+        };
+    }
 };
 
 app.initialize();

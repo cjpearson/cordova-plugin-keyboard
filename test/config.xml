@@ -22,6 +22,7 @@
         <allow-intent href="itms:*" />
         <allow-intent href="itms-apps:*" />
     </platform>
+    <preference name="KeyboardDisplayRequiresUserAction" value="false" />
     <hook src="hooks/set_preferences.js" type="before_prepare" />
     <engine name="ios" spec="~4.3.1" />
     <plugin name="cordova-plugin-keyboard" spec=".." />
