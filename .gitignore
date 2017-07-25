@@ -1,0 +1,4 @@
+test/platforms
+test/plugins
+node_modules/
+.DS_Store
