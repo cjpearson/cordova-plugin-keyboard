@@ -1,0 +1,13 @@
+language: objective-c  
+os: osx  
+osx_image: xcode8
+before_install:  
+- export LANG=en_US.UTF-8
+- brew update
+- npm install -g npm
+- npm install -g cordova
+script:
+- cd test
+- cordova plugin add ../
+- cordova prepare ios
+- cordova build ios --archive
