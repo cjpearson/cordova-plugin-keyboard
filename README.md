@@ -291,6 +291,6 @@ Attach handler to this event to be able to receive notification when keyboard is
     - Fix window.innerHeight when using WKWebView (See [#32](/../../issues/32))
 - 1.2.0
     - Return current values of shrinkView, disableScroll and hideFormAccessoryBar in a success callback
-    - Fix scroller resizing bug (#55)
-    - Fix iOS 11.1.1 WKWebView ShrinksView bug (#64)
+    - Fix scroller resizing bug (See [#55](/../../issues/55))
+    - Fix iOS 11.1.1 WKWebView ShrinksView bug (See [#64](/../../issues/64))
 
