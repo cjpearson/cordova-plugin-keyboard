@@ -1,6 +1,6 @@
 {
   "name": "cordova-plugin-keyboard",
-  "version": "1.1.5",
+  "version": "1.2.0",
   "description": "Cordova Keyboard Plugin",
   "cordova": {
     "id": "cordova-plugin-keyboard",
