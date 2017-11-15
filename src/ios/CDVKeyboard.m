@@ -144,8 +144,8 @@ static IMP WKOriginalImp;
 
 - (void)setShrinkView:(BOOL)shrinkView
 {
-    // When the keyboard shows, WKWebView shrinks window.innerHeight. This isn't helpful when we are already shrinking the frame
-    // They removed this behavior is iOS 10, but for 8 and 9 we need to prevent the webview from listening on keyboard events
+    // Remove WKWebView's keyboard observers when using shrinkView
+    // They've caused several issues with the plugin (#32, #55, #64)
     // Even if you later set shrinkView to false, the observers will not be added back
     NSNotificationCenter* nc = [NSNotificationCenter defaultCenter];
     if ([self.webView isKindOfClass:NSClassFromString(@"WKWebView")]) {
