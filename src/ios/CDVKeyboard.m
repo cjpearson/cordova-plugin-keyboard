@@ -57,6 +57,7 @@
 {
     NSString* setting = nil;
 
+    _shouldAnimateWebView = NO;
     setting = @"HideKeyboardFormAccessoryBar";
     if ([self settingForKey:setting]) {
         self.hideFormAccessoryBar = [(NSNumber*)[self settingForKey:setting] boolValue];
@@ -172,6 +173,7 @@ static IMP WKOriginalImp;
 
 - (void)shrinkViewKeyboardWillChangeFrame:(NSNotification*)notif
 {
+    BOOL shouldAnimate = _shouldAnimateWebView;
     // No-op on iOS 7.0.  It already resizes webview by default, and this plugin is causing layout issues
     // with fixed position elements.  We possibly should attempt to implement shrinkview = false on iOS7.0.
     // iOS 7.1+ behave the same way as iOS 6
@@ -219,15 +221,11 @@ static IMP WKOriginalImp;
     // even though keyboard is already visible, ignoring as early as possible
     if(newScreenHeight == self.webView.frame.size.height)
     {
-        if(_shouldAnimateWebView)
-        {
-            _shouldAnimateWebView = NO;
-        }
         return;
     }
 
     // A view's frame is in its superview's coordinate system so we need to convert again
-    if(!_shouldAnimateWebView)
+    if(!shouldAnimate)
     {
         self.webView.frame = [self.webView.superview convertRect:screen fromView:self.webView];
         return;
@@ -237,15 +235,14 @@ static IMP WKOriginalImp;
     NSNumber *durationValue = userInfo[UIKeyboardAnimationDurationUserInfoKey];
     NSTimeInterval duration = durationValue.doubleValue;
 
-    // Tell JS that it can start animating with values
-    NSString *javascriptString = [NSString stringWithFormat:@"Keyboard.beginAnimation(%f, %f, %f)", currentScreenHeight, newScreenHeight, duration*1000];
-
     BOOL isGrowing = newScreenHeight > currentScreenHeight;
 
     // If webView is growing, change it's frame imediately, so it's content is not clipped during animation
     if (isGrowing) {
         self.webView.frame = [self.webView.superview convertRect:screen fromView:self.webView];
     }
+    // Tell JS that it can start animating with values
+    NSString *javascriptString = [NSString stringWithFormat:@"Keyboard.beginAnimation(%f, %f, %f)", currentScreenHeight, newScreenHeight, duration*1000];
     [self.commandDelegate evalJs: javascriptString];
 
     _animationDetails = [[AnimationDetails alloc] init];
@@ -291,7 +288,7 @@ static IMP WKOriginalImp;
 
         self.shrinkView = [value boolValue];
     }
-    
+
     [self.commandDelegate sendPluginResult:[CDVPluginResult resultWithStatus:CDVCommandStatus_OK messageAsBool:self.shrinkView]
                                 callbackId:command.callbackId];
 }
@@ -306,7 +303,7 @@ static IMP WKOriginalImp;
 
         self.disableScrollingInShrinkView = [value boolValue];
     }
-    
+
     [self.commandDelegate sendPluginResult:[CDVPluginResult resultWithStatus:CDVCommandStatus_OK messageAsBool:self.disableScrollingInShrinkView]
                                 callbackId:command.callbackId];
 }
@@ -318,10 +315,10 @@ static IMP WKOriginalImp;
         if (!([value isKindOfClass:[NSNumber class]])) {
             value = [NSNumber numberWithBool:NO];
         }
-        
+
         self.hideFormAccessoryBar = [value boolValue];
     }
-    
+
     [self.commandDelegate sendPluginResult:[CDVPluginResult resultWithStatus:CDVCommandStatus_OK messageAsBool:self.hideFormAccessoryBar]
                                 callbackId:command.callbackId];
 }
@@ -329,12 +326,6 @@ static IMP WKOriginalImp;
 - (void)hide:(CDVInvokedUrlCommand*)command
 {
     [self.webView endEditing:YES];
-}
-
-// JS indicates that it wants to handle Keyboard animation
-- (void)animationStart:(CDVInvokedUrlCommand *)command
-{
-    _shouldAnimateWebView = YES;
 }
 
 // JS indicates that it finished handling Keyboard animation
@@ -350,8 +341,19 @@ static IMP WKOriginalImp;
     if (!isGrowing) {
         self.webView.frame = [self.webView.superview convertRect:[_animationDetails screen] fromView:self.webView];
     }
-    _shouldAnimateWebView = NO;
     _animationDetails = nil;
+}
+
+// JS indicates that it wants to handle Keyboard animation
+- (void)enableAnimation:(CDVInvokedUrlCommand *)command
+{
+    _shouldAnimateWebView = YES;
+}
+
+// JS indicates that it finished handling Keyboard animation
+- (void)disableAnimation:(CDVInvokedUrlCommand*)command
+{
+    _shouldAnimateWebView = NO;
 }
 
 #pragma mark dealloc
