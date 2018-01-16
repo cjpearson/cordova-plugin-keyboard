@@ -26,16 +26,28 @@ var argscheck = require('cordova/argscheck'),
 var Keyboard = function() {
 };
 
-Keyboard.shrinkView = function(shrink) {
-    exec(null, null, "Keyboard", "shrinkView", [shrink]);
+Keyboard.shrinkView = function(shrink, success) {
+    if (shrink !== null && shrink !== undefined) {
+        exec(success, null, "Keyboard", "shrinkView", [shrink]);
+    } else {
+        exec(success, null, "Keyboard", "shrinkView", []);
+    }
 };
 
-Keyboard.hideFormAccessoryBar = function(hide) {
-    exec(null, null, "Keyboard", "hideFormAccessoryBar", [hide]);
+Keyboard.hideFormAccessoryBar = function(hide, success) {
+    if (hide !== null && hide !== undefined){
+        exec(success, null, "Keyboard", "hideFormAccessoryBar", [hide]);
+    } else {
+        exec(success, null, "Keyboard", "hideFormAccessoryBar", []);
+    }
 };
 
-Keyboard.disableScrollingInShrinkView = function(disable) {
-    exec(null, null, "Keyboard", "disableScrollingInShrinkView", [disable]);
+Keyboard.disableScrollingInShrinkView = function(disable, success) {
+    if (disable !== null && disable !== undefined) {
+        exec(success, null, "Keyboard", "disableScrollingInShrinkView", [disable]);
+    } else {
+        exec(success, null, "Keyboard", "disableScrollingInShrinkView", []);
+    }
 };
 
 Keyboard.fireOnShow = function() {

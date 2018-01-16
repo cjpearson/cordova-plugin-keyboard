@@ -120,17 +120,12 @@
 
 #pragma mark HideFormAccessoryBar
 
-- (BOOL)hideFormAccessoryBar
-{
-    return _hideFormAccessoryBar;
-}
-
 static IMP UIOriginalImp;
 static IMP WKOriginalImp;
 
-- (void)setHideFormAccessoryBar:(BOOL)ahideFormAccessoryBar
+- (void)setHideFormAccessoryBar:(BOOL)hideFormAccessoryBar
 {
-    if (ahideFormAccessoryBar == _hideFormAccessoryBar) {
+    if (hideFormAccessoryBar == _hideFormAccessoryBar) {
         return;
     }
 
@@ -140,7 +135,7 @@ static IMP WKOriginalImp;
     Method UIMethod = class_getInstanceMethod(NSClassFromString(UIClassString), @selector(inputAccessoryView));
     Method WKMethod = class_getInstanceMethod(NSClassFromString(WKClassString), @selector(inputAccessoryView));
 
-    if (ahideFormAccessoryBar) {
+    if (hideFormAccessoryBar) {
         UIOriginalImp = method_getImplementation(UIMethod);
         WKOriginalImp = method_getImplementation(WKMethod);
 
@@ -155,10 +150,25 @@ static IMP WKOriginalImp;
         method_setImplementation(WKMethod, WKOriginalImp);
     }
 
-    _hideFormAccessoryBar = ahideFormAccessoryBar;
+    _hideFormAccessoryBar = hideFormAccessoryBar;
 }
 
 #pragma mark KeyboardShrinksView
+
+- (void)setShrinkView:(BOOL)shrinkView
+{
+    // Remove WKWebView's keyboard observers when using shrinkView
+    // They've caused several issues with the plugin (#32, #55, #64)
+    // Even if you later set shrinkView to false, the observers will not be added back
+    NSNotificationCenter* nc = [NSNotificationCenter defaultCenter];
+    if ([self.webView isKindOfClass:NSClassFromString(@"WKWebView")]) {
+        [nc removeObserver:self.webView name:UIKeyboardWillHideNotification object:nil];
+        [nc removeObserver:self.webView name:UIKeyboardWillShowNotification object:nil];
+        [nc removeObserver:self.webView name:UIKeyboardWillChangeFrameNotification object:nil];
+        [nc removeObserver:self.webView name:UIKeyboardDidChangeFrameNotification object:nil];
+    }
+    _shrinkView = shrinkView;
+}
 
 - (void)shrinkViewKeyboardWillChangeFrame:(NSNotification*)notif
 {
@@ -273,32 +283,47 @@ static IMP WKOriginalImp;
 
 - (void)shrinkView:(CDVInvokedUrlCommand*)command
 {
-    id value = [command.arguments objectAtIndex:0];
-    if (!([value isKindOfClass:[NSNumber class]])) {
-        value = [NSNumber numberWithBool:NO];
-    }
+    if (command.arguments.count > 0) {
+        id value = [command.arguments objectAtIndex:0];
+        if (!([value isKindOfClass:[NSNumber class]])) {
+            value = [NSNumber numberWithBool:NO];
+        }
 
-    self.shrinkView = [value boolValue];
+        self.shrinkView = [value boolValue];
+    }
+    
+    [self.commandDelegate sendPluginResult:[CDVPluginResult resultWithStatus:CDVCommandStatus_OK messageAsBool:self.shrinkView]
+                                callbackId:command.callbackId];
 }
 
 - (void)disableScrollingInShrinkView:(CDVInvokedUrlCommand*)command
 {
-    id value = [command.arguments objectAtIndex:0];
-    if (!([value isKindOfClass:[NSNumber class]])) {
-        value = [NSNumber numberWithBool:NO];
-    }
+    if (command.arguments.count > 0) {
+        id value = [command.arguments objectAtIndex:0];
+        if (!([value isKindOfClass:[NSNumber class]])) {
+            value = [NSNumber numberWithBool:NO];
+        }
 
-    self.disableScrollingInShrinkView = [value boolValue];
+        self.disableScrollingInShrinkView = [value boolValue];
+    }
+    
+    [self.commandDelegate sendPluginResult:[CDVPluginResult resultWithStatus:CDVCommandStatus_OK messageAsBool:self.disableScrollingInShrinkView]
+                                callbackId:command.callbackId];
 }
 
 - (void)hideFormAccessoryBar:(CDVInvokedUrlCommand*)command
 {
-    id value = [command.arguments objectAtIndex:0];
-    if (!([value isKindOfClass:[NSNumber class]])) {
-        value = [NSNumber numberWithBool:NO];
+    if (command.arguments.count > 0) {
+        id value = [command.arguments objectAtIndex:0];
+        if (!([value isKindOfClass:[NSNumber class]])) {
+            value = [NSNumber numberWithBool:NO];
+        }
+        
+        self.hideFormAccessoryBar = [value boolValue];
     }
-
-    self.hideFormAccessoryBar = [value boolValue];
+    
+    [self.commandDelegate sendPluginResult:[CDVPluginResult resultWithStatus:CDVCommandStatus_OK messageAsBool:self.hideFormAccessoryBar]
+                                callbackId:command.callbackId];
 }
 
 - (void)hide:(CDVInvokedUrlCommand*)command
@@ -334,12 +359,13 @@ static IMP WKOriginalImp;
 - (void)dealloc
 {
     // since this is ARC, remove observers only
-
     NSNotificationCenter* nc = [NSNotificationCenter defaultCenter];
 
-    [nc removeObserver:self name:UIKeyboardWillShowNotification object:nil];
-    [nc removeObserver:self name:UIKeyboardWillHideNotification object:nil];
-    [nc removeObserver:self name:UIKeyboardWillChangeFrameNotification object:nil];
+    [nc removeObserver:_keyboardShowObserver];
+    [nc removeObserver:_keyboardHideObserver];
+    [nc removeObserver:_keyboardWillShowObserver];
+    [nc removeObserver:_keyboardWillHideObserver];
+    [nc removeObserver:_shrinkViewKeyboardWillChangeFrameObserver];
 }
 
 @end

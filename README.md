@@ -10,21 +10,21 @@ This plugin was based on this Apache [project](https://github.com/apache/cordova
 
 - [Installation](#installation)
 - [Methods](#methods)
- - [Keyboard.shrinkView](#keyboardshrinkview)
- - [Keyboard.hideFormAccessoryBar](#keyboardhideformaccessorybar)
- - [Keyboard.disableScrollingInShrinkView](#keyboarddisablescrollinginshrinkview)
- - [Keyboard.hide](#keyboardhide)
- - [Keyboard.show](#keyboardshow)
+    - [Keyboard.shrinkView](#keyboardshrinkview)
+    - [Keyboard.hideFormAccessoryBar](#keyboardhideformaccessorybar)
+    - [Keyboard.disableScrollingInShrinkView](#keyboarddisablescrollinginshrinkview)
+    - [Keyboard.hide](#keyboardhide)
+    - [Keyboard.show](#keyboardshow)
 - [Properties](#properties)
- - [Keyboard.isVisible](#keyboardisvisible)
- - [Keyboard.automaticScrollToTopOnHiding](#keyboardautomaticscrolltotoponhiding)
- - [Keyboard.onKeyboardAnimate](#keyboardonkeyboardanimate)
+    - [Keyboard.isVisible](#keyboardisvisible)
+    - [Keyboard.automaticScrollToTopOnHiding](#keyboardautomaticscrolltotoponhiding)
+    - [Keyboard.onKeyboardAnimate](#keyboardonkeyboardanimate)
 - [Events](#events)
- - [keyboardDidShow](#keyboarddidshow)
- - [keyboardDidHide](#keyboarddidhide)
- - [keyboardWillShow](#keyboardwillshow)
- - [keyboardWillHide](#keyboardwillhide)
- - [keyboardHeightWillChange](#keyboardheightwillchange)
+    - [keyboardDidShow](#keyboarddidshow)
+    - [keyboardDidHide](#keyboarddidhide)
+    - [keyboardWillShow](#keyboardwillshow)
+    - [keyboardWillHide](#keyboardwillhide)
+    - [keyboardHeightWillChange](#keyboardheightwillchange)
 - [Releases](#releases) 
 
 # Installation
@@ -43,7 +43,7 @@ From github latest (may not be stable)
 
 Shrink the WebView when the keyboard comes up.
 
-    Keyboard.shrinkView(true);
+    Keyboard.shrinkView(value, successCallback);
 
 #### Description
 
@@ -58,12 +58,13 @@ Set to true to shrink the WebView when the keyboard comes up. The WebView shrink
 
     Keyboard.shrinkView(true);
     Keyboard.shrinkView(false);
+    Keyboard.shrinkView(null, function (currentValue) { console.log(currentValue); });
 
 ## Keyboard.hideFormAccessoryBar
 
 Hide the keyboard toolbar.
 
-    Keyboard.hideFormAccessoryBar(true);
+    Keyboard.hideFormAccessoryBar(value, successCallback);
 
 #### Description
 
@@ -78,13 +79,13 @@ Set to true to hide the additional toolbar that is on top of the keyboard. This 
 
     Keyboard.hideFormAccessoryBar(true);
     Keyboard.hideFormAccessoryBar(false);
-
+    Keyboard.hideFormAccessoryBar(null, function (currentValue) { console.log(currentValue); });
 
 ## Keyboard.disableScrollingInShrinkView
 
 Disable scrolling when the the WebView is shrunk.
 
-    Keyboard.disableScrollingInShrinkView(true);
+    Keyboard.disableScrollingInShrinkView(value, successCallback);
 
 #### Description
 
@@ -99,6 +100,7 @@ Set to true to disable scrolling when the WebView is shrunk.
 
     Keyboard.disableScrollingInShrinkView(true);
     Keyboard.disableScrollingInShrinkView(false);
+    Keyboard.disableScrollingInShrinkView(null, function (currentValue) { console.log(currentValue); });
  
 ## Keyboard.hide
 
@@ -297,24 +299,29 @@ Attach handler to this event to be able to receive notification when keyboard is
 # Releases
 
 - 1.0.0 
- - Initial NPM release
- - Fix issues with external keyboards
- - Support keyboard events on window
- - Fix issues with split and undocked keyboards
- - Add keyboardHeightWillChange event
- - Fix issues with StatusBarOverlaysWebview
+    - Initial NPM release
+    - Fix issues with external keyboards
+    - Support keyboard events on window
+    - Fix issues with split and undocked keyboards
+    - Add keyboardHeightWillChange event
+    - Fix issues with StatusBarOverlaysWebview
 - 1.1.0
- - Add hide/show for Android
- - Support original keyboard event mechanism
+    - Add hide/show for Android
+    - Support original keyboard event mechanism
 - 1.1.1
- - Make compatible with cordova-android 3 and 4 (See [#2](/../../issues/2))
- - Add hide for iOS
+    - Make compatible with cordova-android 3 and 4 (See [#2](/../../issues/2))
+    - Add hide for iOS
 - 1.1.2
- - Fix issues with hiding the accessory bar (See [#3](/../../issues/3))
+    - Fix issues with hiding the accessory bar (See [#3](/../../issues/3))
 - 1.1.3
- - Support hiding the accessory bar when using WKWebView as the engine (See [here](https://github.com/Telerik-Verified-Plugins/WKWebView/issues/85))
+    - Support hiding the accessory bar when using WKWebView as the engine (See [here](https://github.com/Telerik-Verified-Plugins/WKWebView/issues/85))
 - 1.1.4
- - Fix page scrolling (See [#14](/../../issues/14))
- - Prevent possible app store rejections (See [#21](/../../issues/21)) 
-
+    - Fix page scrolling (See [#14](/../../issues/14))
+    - Prevent possible app store rejections (See [#21](/../../issues/21)) 
+- 1.1.5
+    - Fix window.innerHeight when using WKWebView (See [#32](/../../issues/32))
+- 1.2.0
+    - Return current values of shrinkView, disableScroll and hideFormAccessoryBar in a success callback
+    - Fix scroller resizing bug (See [#55](/../../issues/55))
+    - Fix iOS 11.1.1 WKWebView ShrinksView bug (See [#64](/../../issues/64))
 
