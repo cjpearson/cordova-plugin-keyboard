@@ -15,10 +15,10 @@ This plugin was based on this Apache [project](https://github.com/apache/cordova
     - [Keyboard.disableScrollingInShrinkView](#keyboarddisablescrollinginshrinkview)
     - [Keyboard.hide](#keyboardhide)
     - [Keyboard.show](#keyboardshow)
+    - [Keyboard.setKeyboardAnimator](#keyboardsetkeyboardanimator)
 - [Properties](#properties)
     - [Keyboard.isVisible](#keyboardisvisible)
     - [Keyboard.automaticScrollToTopOnHiding](#keyboardautomaticscrolltotoponhiding)
-    - [Keyboard.onKeyboardAnimate](#keyboardonkeyboardanimate)
 - [Events](#events)
     - [keyboardDidShow](#keyboarddidshow)
     - [keyboardDidHide](#keyboarddidhide)
@@ -177,11 +177,11 @@ after keyboard is hiding.
 
 - iOS
 
-## Keyboard.onKeyboardAnimate
+## Keyboard.setKeyboardAnimator
 
 Assign a function that will handle content animation in the browser
 
-    Keyboard.onKeyboardAnimate = function(fromHeight, toHeight, animationDurationInMs, animationCompleteCallback)
+    Keyboard.setKeyboardAnimator(function(fromHeight, toHeight, animationDurationInMs, animationCompleteCallback)
     {    
         // Example with jQuery (http://jquery.com/) and Velocity.JS (http://julian.com/research/velocity/)
         $('body').velocity({height: [to, from]}, {duration: animationDurationInMS, easing: "easeOutQuad", complete: function()
@@ -189,7 +189,7 @@ Assign a function that will handle content animation in the browser
             // Tells the plugin that client side has finished animation
             animationCompleteCallback();
         }});
-    };
+    });
 
 #### Description
 
