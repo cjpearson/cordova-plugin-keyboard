@@ -22,7 +22,7 @@
 var argscheck = require('cordova/argscheck'),
     utils = require('cordova/utils'),
     exec = require('cordova/exec');
-   
+
 var Keyboard = function() {
 };
 
@@ -55,7 +55,7 @@ Keyboard.fireOnShow = function() {
     cordova.fireWindowEvent('keyboardDidShow');
 
     if(Keyboard.onshow) {
-	Keyboard.onshow();
+        Keyboard.onshow();
     }
 };
 
@@ -64,7 +64,16 @@ Keyboard.fireOnHide = function() {
     cordova.fireWindowEvent('keyboardDidHide');
 
     if(Keyboard.onhide) {
-	Keyboard.onhide();
+        Keyboard.onhide();
+    }
+};
+
+Keyboard.setKeyboardAnimator = function(animator) {
+    Keyboard.onKeyboardAnimate = animator;
+    if(typeof Keyboard.onKeyboardAnimate === "function") {
+        exec(null, null, "Keyboard", "enableAnimation", []);
+    } else {
+        exec(null, null, "Keyboard", "disableAnimation", []);
     }
 };
 
@@ -80,7 +89,7 @@ Keyboard.fireOnHiding = function() {
     cordova.fireWindowEvent('keyboardWillHide');
 
     if(Keyboard.onhiding) {
-	Keyboard.onhiding();
+        Keyboard.onhiding();
     }
 };
 
@@ -88,7 +97,7 @@ Keyboard.fireOnShowing = function() {
     cordova.fireWindowEvent('keyboardWillShow');
 
     if(Keyboard.onshowing) {
-	Keyboard.onshowing();
+        Keyboard.onshowing();
     }
 };
 
@@ -100,6 +109,17 @@ Keyboard.hide = function() {
     exec(null, null, "Keyboard", "hide", []);
 };
 
+var animationComplete = function() {
+    exec(null, null, "Keyboard", "animationComplete", []);
+};
+
+Keyboard.beginAnimation = function(from, to, duration) {
+    if(typeof Keyboard.onKeyboardAnimate === 'function') {
+        Keyboard.onKeyboardAnimate(from, to, duration, animationComplete);
+    }
+};
+
+Keyboard.onKeyboardAnimate = null;
 Keyboard.isVisible = false;
 Keyboard.automaticScrollToTopOnHiding = false;
 
