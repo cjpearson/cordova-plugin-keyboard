@@ -7,34 +7,42 @@
     <keywords>cordova,keyboard</keywords>
 
     <engines>
-	<engine name="cordova" version=">=3.2.0" />
+        <engine name="cordova" version=">=3.2.0"/>
     </engines>
 
     <js-module src="www/keyboard.js" name="keyboard">
-    	<clobbers target="window.Keyboard" />
+        <clobbers target="window.Keyboard"/>
     </js-module>
 
     <!-- ios -->
     <platform name="ios">
         <config-file target="config.xml" parent="/*">
             <feature name="Keyboard">
-                <param name="ios-package" value="CDVKeyboard" onload="true" />
+                <param name="ios-package" value="CDVKeyboard" onload="true"/>
             </feature>
         </config-file>
 
-        <header-file src="src/ios/CDVKeyboard.h" />
-        <source-file src="src/ios/CDVKeyboard.m" />
+        <header-file src="src/ios/CDVKeyboard.h"/>
+        <source-file src="src/ios/CDVKeyboard.m"/>
     </platform>
 
     <!-- android -->
     <platform name="android">
         <config-file target="config.xml" parent="/*">
             <feature name="Keyboard">
-                <param name="android-package" value="org.apache.cordova.labs.keyboard.Keyboard" onload="true" />
+                <param name="android-package" value="org.apache.cordova.labs.keyboard.Keyboard"
+                       onload="true"/>
             </feature>
         </config-file>
 
-        <source-file src="src/android/Keyboard.java" target-dir="src/org/apache/cordova/labs/keyboard" />
+        <source-file src="src/android/Keyboard.java" target-dir="src/org/apache/cordova/labs/keyboard"/>
+    </platform>
+
+    <!-- windows -->
+    <platform name="windows">
+        <js-module src="src/windows/KeyboardProxy.js" name="KeyboardProxy">
+            <clobbers target="window.Keyboard"/>
+        </js-module>
     </platform>
 
 </plugin>
