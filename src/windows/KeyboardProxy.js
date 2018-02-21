@@ -1,12 +1,12 @@
 /*global Windows, WinJS, cordova, module, require*/
 
 var inputPane = Windows.UI.ViewManagement.InputPane.getForCurrentView();
-var keyboardScrollDisabled = false;
+var keyboardScrollDisabled = true;
 var isVisible = false;
 
 inputPane.addEventListener('hiding', function () {
     cordova.fireWindowEvent('keyboardWillHide');
-    cordova.fireWindowEvent('keyboardHeightWillChange', { keyboardHeight: 0 });
+    cordova.fireWindowEvent('keyboardHeightWillChange', {keyboardHeight: 0});
     isVisible = false;
     cordova.fireWindowEvent('keyboardDidHide');
 });
@@ -17,12 +17,12 @@ inputPane.addEventListener('showing', function (e) {
         // this disables automatic scrolling of view contents to show focused control
         e.ensuredFocusedElementInView = true;
     }
-    cordova.fireWindowEvent('keyboardHeightWillChange', { keyboardHeight: e.occludedRect.height });
+    cordova.fireWindowEvent('keyboardHeightWillChange', {keyboardHeight: e.occludedRect.height});
     isVisible = true;
     cordova.fireWindowEvent('keyboardDidShow');
 });
 
-module.exports.disableScrollingInShrinkView  = function (disable) {
+module.exports.disableScrollingInShrinkView = function (disable) {
     keyboardScrollDisabled = disable;
 };
 
