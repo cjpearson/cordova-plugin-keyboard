@@ -10,14 +10,14 @@ This plugin was based on this Apache [project](https://github.com/apache/cordova
 
 - [Installation](#installation)
 - [Methods](#methods)
-    - [Keyboard.shrinkView](#keyboardshrinkview)
-    - [Keyboard.hideFormAccessoryBar](#keyboardhideformaccessorybar)
-    - [Keyboard.disableScrollingInShrinkView](#keyboarddisablescrollinginshrinkview)
-    - [Keyboard.hide](#keyboardhide)
-    - [Keyboard.show](#keyboardshow)
+    - [cordova.plugins.Keyboard.shrinkView](#keyboardshrinkview)
+    - [cordova.plugins.Keyboard.hideFormAccessoryBar](#keyboardhideformaccessorybar)
+    - [cordova.plugins.Keyboard.disableScrollingInShrinkView](#keyboarddisablescrollinginshrinkview)
+    - [cordova.plugins.Keyboard.hide](#keyboardhide)
+    - [cordova.plugins.Keyboard.show](#keyboardshow)
 - [Properties](#properties)
-    - [Keyboard.isVisible](#keyboardisvisible)
-    - [Keyboard.automaticScrollToTopOnHiding](#keyboardautomaticscrolltotoponhiding)
+    - [cordova.plugins.Keyboard.isVisible](#keyboardisvisible)
+    - [cordova.plugins.Keyboard.automaticScrollToTopOnHiding](#keyboardautomaticscrolltotoponhiding)
 - [Events](#events)
     - [keyboardDidShow](#keyboarddidshow)
     - [keyboardDidHide](#keyboarddidhide)
@@ -38,11 +38,11 @@ From github latest (may not be stable)
 
 # Methods
 
-## Keyboard.shrinkView
+## cordova.plugins.Keyboard.shrinkView
 
 Shrink the WebView when the keyboard comes up.
 
-    Keyboard.shrinkView(value, successCallback);
+    cordova.plugins.Keyboard.shrinkView(value, successCallback);
 
 #### Description
 
@@ -55,15 +55,15 @@ Set to true to shrink the WebView when the keyboard comes up. The WebView shrink
 
 #### Quick Example
 
-    Keyboard.shrinkView(true);
-    Keyboard.shrinkView(false);
-    Keyboard.shrinkView(null, function (currentValue) { console.log(currentValue); });
+    cordova.plugins.Keyboard.shrinkView(true);
+    cordova.plugins.Keyboard.shrinkView(false);
+    cordova.plugins.Keyboard.shrinkView(null, function (currentValue) { console.log(currentValue); });
 
-## Keyboard.hideFormAccessoryBar
+## cordova.plugins.Keyboard.hideFormAccessoryBar
 
 Hide the keyboard toolbar.
 
-    Keyboard.hideFormAccessoryBar(value, successCallback);
+    cordova.plugins.Keyboard.hideFormAccessoryBar(value, successCallback);
 
 #### Description
 
@@ -76,15 +76,15 @@ Set to true to hide the additional toolbar that is on top of the keyboard. This 
 
 #### Quick Example
 
-    Keyboard.hideFormAccessoryBar(true);
-    Keyboard.hideFormAccessoryBar(false);
-    Keyboard.hideFormAccessoryBar(null, function (currentValue) { console.log(currentValue); });
+    cordova.plugins.Keyboard.hideFormAccessoryBar(true);
+    cordova.plugins.Keyboard.hideFormAccessoryBar(false);
+    cordova.plugins.Keyboard.hideFormAccessoryBar(null, function (currentValue) { console.log(currentValue); });
 
-## Keyboard.disableScrollingInShrinkView
+## cordova.plugins.Keyboard.disableScrollingInShrinkView
 
 Disable scrolling when the the WebView is shrunk.
 
-    Keyboard.disableScrollingInShrinkView(value, successCallback);
+    cordova.plugins.Keyboard.disableScrollingInShrinkView(value, successCallback);
 
 #### Description
 
@@ -97,15 +97,15 @@ Set to true to disable scrolling when the WebView is shrunk.
 
 #### Quick Example
 
-    Keyboard.disableScrollingInShrinkView(true);
-    Keyboard.disableScrollingInShrinkView(false);
-    Keyboard.disableScrollingInShrinkView(null, function (currentValue) { console.log(currentValue); });
+    cordova.plugins.Keyboard.disableScrollingInShrinkView(true);
+    cordova.plugins.Keyboard.disableScrollingInShrinkView(false);
+    cordova.plugins.Keyboard.disableScrollingInShrinkView(null, function (currentValue) { console.log(currentValue); });
  
-## Keyboard.hide
+## cordova.plugins.Keyboard.hide
 
 Hide the keyboard
 
-    Keyboard.hide();
+    cordova.plugins.Keyboard.hide();
 
 #### Description
 
@@ -118,13 +118,13 @@ Call this method to hide the keyboard
 
 #### Quick Example
 
-    Keyboard.hide();
+    cordova.plugins.Keyboard.hide();
 
-## Keyboard.show
+## cordova.plugins.Keyboard.show
 
 Show the keyboard
 
-    Keyboard.show();
+    cordova.plugins.Keyboard.show();
 
 #### Description
 
@@ -137,15 +137,15 @@ Call this method to show the keyboard.
 
 #### Quick Example
 
-    Keyboard.show();
+    cordova.plugins.Keyboard.show();
 
 # Properties
 
-## Keyboard.isVisible
+## cordova.plugins.Keyboard.isVisible
 
 Determine if the keyboard is visible.
 
-    if (Keyboard.isVisible) {
+    if (cordova.plugins.Keyboard.isVisible) {
         // do something
     }
 
@@ -158,12 +158,12 @@ Read this property to determine if the keyboard is visible.
 
 - iOS
 
-## Keyboard.automaticScrollToTopOnHiding
+## cordova.plugins.Keyboard.automaticScrollToTopOnHiding
 
 Specifies whenether content of page would be automatically scrolled to the top of the page
 when keyboard is hiding.
 
-    Keyboard.automaticScrollToTopOnHiding = true;
+    cordova.plugins.Keyboard.automaticScrollToTopOnHiding = true;
 
 #### Description
 
