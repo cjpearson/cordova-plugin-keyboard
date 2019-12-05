@@ -48,6 +48,7 @@ Shrink the WebView when the keyboard comes up.
 
 Set to true to shrink the WebView when the keyboard comes up. The WebView shrinks instead of the viewport shrinking and the page scrollable. This applies to apps that position their elements relative to the bottom of the WebView. This is the default behaviour on Android, and makes a lot of sense when building apps as opposed to webpages.
 
+**Fixed scroll the content to bottom when keyboard is showing and the shrinkview param is true. Work with meta viewport-fit=cover fix for iphone x.**
 
 #### Supported Platforms
 
