@@ -1,6 +1,6 @@
 {
   "name": "cordova-plugin-keyboard",
-  "version": "1.2.0",
+  "version": "1.2.3",
   "description": "Cordova Keyboard Plugin",
   "cordova": {
     "id": "cordova-plugin-keyboard",
@@ -10,7 +10,7 @@
   },
   "repository": {
     "type": "git",
-    "url": "https://github.com/cjpearson/cordova-plugin-keyboard.git"
+    "url": "https://github.com/costin-moraru/cordova-plugin-keyboard.git"
   },
   "keywords": [
     "cordova",
@@ -28,7 +28,7 @@
   "author": "Apache Software Foundation",
   "license": "Apache 2.0",
   "bugs": {
-    "url": "https://github.com/cjpearson/cordova-plugin-keyboard/issues"
+    "url": "https://github.com/costin-moraru/cordova-plugin-keyboard.git/issues"
   },
-  "homepage": "https://github.com/cjpearson/cordova-plugin-keyboard#readme"
+  "homepage": "https://github.com/costin-moraru/cordova-plugin-keyboard.git#readme"
 }
